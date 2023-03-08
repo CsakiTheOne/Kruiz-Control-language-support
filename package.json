@@ -1,0 +1,25 @@
+{
+  "name": "kruiz-control-language-support",
+  "displayName": "Kruiz-Control-language-support",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.76.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "kruizcontrol",
+      "aliases": ["Kruiz-Control", "kruizcontrol"],
+      "extensions": [".txt"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "kruizcontrol",
+      "scopeName": "source.txt",
+      "path": "./syntaxes/kruizcontrol.tmLanguage.json"
+    }]
+  }
+}
