@@ -40,7 +40,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.kruizcontrol",
-					"match": "\\b(if|If|exit|Exit)\\b"
+					"match": "(?i)\\b(if|exit)\\b"
 				}
 			]
 		},
@@ -48,7 +48,7 @@
 			"patterns": [
 				{
 					"name": "keyword.other.kruizcontrol",
-					"match": "\\bOn[A-Z][a-zA-Z]+\\b"
+					"match": "(?i)\\bon[a-z]+\\b"
 				}
 			]
 		},
@@ -56,7 +56,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.function.kruizcontrol",
-					"match": "\\b(Chat|Delay|Message|OBS|Play|Variable)\\b"
+					"match": "(?i)\\b(chat|delay|message|obs|play|variable)\\b"
 				}
 			]
 		},
@@ -91,7 +91,7 @@
 			"patterns": [
 				{
 					"name": "constant.character.kruizcontrol",
-					"match": "\\b([bsfvmne]+|u )\\b"
+					"match": "(?i)\\b([bsfvmne]+|u )\\b"
 				}
 			]
 		}

@@ -7,25 +7,53 @@
     "vscode": "^1.76.0"
   },
   "categories": [
-    "Programming Languages", "Snippets"
+    "Programming Languages",
+    "Snippets"
   ],
+  "main": "./out/extension.js",
+  "scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint \"src/**/*.ts\"",
+		"watch": "tsc -watch -p ./"
+	},
   "contributes": {
-    "languages": [{
-      "id": "kruizcontrol",
-      "aliases": ["Kruiz-Control", "kruizcontrol"],
-      "extensions": [".txt"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "kruizcontrol",
-      "scopeName": "source.txt",
-      "path": "./syntaxes/kruizcontrol.tmLanguage.json"
-    }],
+    "languages": [
+      {
+        "id": "kruizcontrol",
+        "aliases": [
+          "Kruiz-Control",
+          "kruizcontrol"
+        ],
+        "extensions": [
+          ".txt"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "kruizcontrol",
+        "scopeName": "source.txt",
+        "path": "./syntaxes/kruizcontrol.tmLanguage.json"
+      }
+    ],
     "snippets": [
       {
         "language": "kruizcontrol",
         "path": "./snippets/kruizcontrol.json"
       }
     ]
-  }
+  },
+  "dependencies": {
+		"@types/vscode": "^1.73.0"
+  },
+  "devDependencies": {
+		"@types/node": "^16.11.7",
+		"@types/vscode": "^1.73.0",
+		"@typescript-eslint/eslint-plugin": "^5.42.0",
+		"@typescript-eslint/parser": "^5.42.0",
+		"eslint": "^8.26.0",
+		"typescript": "^4.9.4"
+	}
 }

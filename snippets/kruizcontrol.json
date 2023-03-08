@@ -22,7 +22,7 @@
     "Permission user": {
         "prefix": "permissionUser",
         "body": "u ${1:<username>}"
-    },
+    },/*
     "Variable load": {
         "prefix": "varLoad",
         "body": [
@@ -99,5 +99,5 @@
             "OnChannelPoint ${1:<rewardName>}",
             "$0"
         ]
-    }
+    }*/
 }
