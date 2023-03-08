@@ -7,7 +7,7 @@
     "vscode": "^1.76.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages", "Snippets"
   ],
   "contributes": {
     "languages": [{
@@ -20,6 +20,12 @@
       "language": "kruizcontrol",
       "scopeName": "source.txt",
       "path": "./syntaxes/kruizcontrol.tmLanguage.json"
-    }]
+    }],
+    "snippets": [
+      {
+        "language": "kruizcontrol",
+        "path": "./snippets/kruizcontrol.json"
+      }
+    ]
   }
 }

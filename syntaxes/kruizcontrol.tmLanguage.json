@@ -3,18 +3,70 @@
 	"name": "Kruiz-Control",
 	"patterns": [
 		{
+			"include": "#comments"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
+			"include": "#triggers"
+		},
+		{
+			"include": "#actions"
+		},
+		{
+			"include": "#ttw-commands"
+		},
+		{
 			"include": "#strings"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#permissions"
 		}
 	],
 	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.number-sign.kruizcontrol",
+					"match": "#.*"
+				}
+			]
+		},
 		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.kruizcontrol",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
+			"patterns": [
+				{
+					"name": "keyword.control.kruizcontrol",
+					"match": "\\b(if|If|exit|Exit)\\b"
+				}
+			]
+		},
+		"triggers": {
+			"patterns": [
+				{
+					"name": "keyword.other.kruizcontrol",
+					"match": "\\bOn[A-Z][a-zA-Z]+\\b"
+				}
+			]
+		},
+		"actions": {
+			"patterns": [
+				{
+					"name": "entity.name.function.kruizcontrol",
+					"match": "\\b(Chat|Delay|Message|OBS|Play|Variable)\\b"
+				}
+			]
+		},
+		"ttw-commands": {
+			"patterns": [
+				{
+					"name": "entity.name.function.kruizcontrol",
+					"match": "!.+\\b"
+				}
+			]
 		},
 		"strings": {
 			"name": "string.quoted.double.kruizcontrol",
@@ -24,6 +76,22 @@
 				{
 					"name": "constant.character.escape.kruizcontrol",
 					"match": "\\\\."
+				}
+			]
+		},
+		"numbers": {
+			"patterns": [
+				{
+					"name": "constant.numeric.kruizcontrol",
+					"match": "\\b[0-9]+\\b"
+				}
+			]
+		},
+		"permissions": {
+			"patterns": [
+				{
+					"name": "constant.character.kruizcontrol",
+					"match": "\\b([bsfvmne]+|u )\\b"
 				}
 			]
 		}
