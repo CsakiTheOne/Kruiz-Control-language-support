@@ -53,6 +53,8 @@ function activate(context) {
                         .map(id => tokens_1.default.find(token => token.id == id))
                         .filter(token => token != undefined)
                         .map(token => token.toCompletionItem());
+                    if (rule.tokenIds.includes('literal.user'))
+                        availableCompletions = availableCompletions.concat(Symbols_1.default.userCompletions);
                     if (rule.tokenIds.includes('variable'))
                         availableCompletions = availableCompletions.concat(Symbols_1.default.variableCompletions);
                     availableCompletions = availableCompletions.concat(ruleTokens);
@@ -77,7 +79,6 @@ function activate(context) {
             // find the symbol
             const lineSymbols = Symbols_1.default.list.filter(symbol => symbol.line == position.line);
             const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
-            console.log(`Looking for definition of ${symbol?.content} (${symbol?.token.id})...`);
             // if variable, find loading place
             if (symbol?.token.id == 'variable') {
                 const loader = Symbols_1.default.list.find(loader => loader.token.id == 'variable.loaded' &&
@@ -85,7 +86,6 @@ function activate(context) {
                 if (loader == undefined)
                     return;
                 const loaderPos = new vscode.Position(loader?.line, loader.column);
-                console.log(`Variable loader found at ${loaderPos}`);
                 return new vscode.Location(vscode.Uri.file(document.fileName), loaderPos);
             }
             return;

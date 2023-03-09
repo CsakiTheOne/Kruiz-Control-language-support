@@ -17,5 +17,10 @@ class Symbols {
 }
 exports.default = Symbols;
 Symbols.list = [];
+Symbols.userCompletions = [
+    new vscode.CompletionItem('CsakiTheOne', vscode.CompletionItemKind.User),
+    new vscode.CompletionItem('Lightfall_23', vscode.CompletionItemKind.User),
+    new vscode.CompletionItem('NeshyLegacy', vscode.CompletionItemKind.User),
+];
 Symbols.variableCompletions = [];
 //# sourceMappingURL=Symbols.js.map
