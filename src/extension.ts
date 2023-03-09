@@ -4,12 +4,6 @@ import Symbol from './Symbol';
 import Token from './Token';
 import Symbols from './Symbols';
 
-/*
-if 2 {number} == 10
-OnCommand e 0 !lol
-chat send "pong"
-*/
-
 function updateSymbols(document: vscode.TextDocument) {
 	const docText = document.getText();
 	const lines = docText.split('\n');
@@ -22,7 +16,7 @@ function updateSymbols(document: vscode.TextDocument) {
 		let lineResult = null;
 		tokens.forEach(token => {
 			lineResult = line.match(token.regex);
-			if (lineResult) symbols.push(new Symbol(token, lineResult[0], lineIndex));
+			if (lineResult) symbols.push(new Symbol(token, lineResult[0], lineIndex, 0));
 			//console.log(`Line: ${lineIndex} Token: ${token.id} Result: ${lineResult}`);
 		});
 		// Check word by word tokens
@@ -32,7 +26,8 @@ function updateSymbols(document: vscode.TextDocument) {
 				const word = words[wordIndex];
 				tokens.forEach(token => {
 					const wordResult = word.match(token.regex);
-					if (wordResult) symbols.push(new Symbol(token, wordResult[0], lineIndex, wordIndex));
+					const column = line.indexOf(word);
+					if (wordResult) symbols.push(new Symbol(token, wordResult[0], lineIndex, column, wordIndex));
 				});
 			}
 		}
@@ -43,12 +38,12 @@ function updateSymbols(document: vscode.TextDocument) {
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const baseProvider = {
+	const completionProvider = {
 		provideCompletionItems(
 			document: vscode.TextDocument,
 			position: vscode.Position,
 			token: vscode.CancellationToken,
-			context: vscode.CompletionContext
+			context: vscode.CompletionContext,
 		) {
 			updateSymbols(document);
 
@@ -57,16 +52,17 @@ export function activate(context: vscode.ExtensionContext) {
 			const currentWordIndex = document.lineAt(position.line).text.trimStart().split(' ').length - 1;
 
 			// look for available tokens to suggest based on the collected symbols
-			let availableTokens: Token[] = [];
+			let availableCompletions: vscode.CompletionItem[] = [];
 			currentLineSymbols.forEach(symbol => {
 				symbol.token.rules.forEach(rule => {
 					const isRelevant = symbol.word != undefined && currentWordIndex == symbol.word + rule.offset;
 					if (!isRelevant) return;
-					const ruleTokens: Token[] = rule.tokenIds
+					const ruleTokens: vscode.CompletionItem[] = rule.tokenIds
 						.map(id => tokens.find(token => token.id == id))
 						.filter(token => token != undefined)
-						.map(token => token!);
-					availableTokens = availableTokens.concat(ruleTokens);
+						.map(token => token!.toCompletionItem());
+					if (rule.tokenIds.includes('variable')) availableCompletions = availableCompletions.concat(Symbols.variableCompletions);
+					availableCompletions = availableCompletions.concat(ruleTokens);
 				});
 			});
 
@@ -74,8 +70,8 @@ export function activate(context: vscode.ExtensionContext) {
 			console.table(Symbols.list.map(s => s.tabularData()));
 
 			// suggest the found tokens
-			if (availableTokens.length > 0) {
-				return availableTokens.map(token => token.toCompletionItem());
+			if (availableCompletions.length > 0) {
+				return availableCompletions;
 			}
 
 			// if no token found and line is empty, suggest top-level tokens
@@ -85,9 +81,37 @@ export function activate(context: vscode.ExtensionContext) {
 
 			return [];
 		}
-	}
+	};
+
+	const definitionProvider = {
+		provideDefinition(
+			document: vscode.TextDocument,
+			position: vscode.Position,
+			token: vscode.CancellationToken,
+		) {
+			updateSymbols(document);
+
+			// find the symbol
+			const lineSymbols = Symbols.list.filter(symbol => symbol.line == position.line);
+			const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
+
+			// if variable, find loading place
+			if (symbol?.token.id == 'variable') {
+				const loader = Symbols.list.find(loader => 
+					loader.token.id == 'variable.loaded' &&
+					symbol.content == `{${loader.content}}`
+				);
+				if (loader == undefined) return;
+				const loaderPos = new vscode.Position(loader?.line, loader.column);
+				return new vscode.Location(vscode.Uri.file(document.fileName), loaderPos);
+			}
+
+			return;
+		}
+	};
 
 	context.subscriptions.push(
-		vscode.languages.registerCompletionItemProvider('kruizcontrol', baseProvider, '', ' '),
+		vscode.languages.registerCompletionItemProvider('kruizcontrol', completionProvider, '', ' '),
+		vscode.languages.registerDefinitionProvider('kruizcontrol', definitionProvider),
 	);
 }

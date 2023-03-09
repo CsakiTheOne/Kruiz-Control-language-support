@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Symbol {
-    constructor(token, content, line, word = undefined) {
+    constructor(token, content, line, column, word = undefined) {
         this.token = token;
         this.content = content;
         this.line = line;
+        this.column = column;
         this.word = word;
     }
     tabularData() {

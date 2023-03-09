@@ -13,7 +13,7 @@ function after(wordsOffset: number, tokenIds: string[]) {
 
 export default [
     new Token('comment', /^#.+/, 'comment', vscode.CompletionItemKind.Text, '# ${1:comment...}').topLevel(),
-    new Token('variable', /^{[a-zA-Z0-9]+}$/, 'variable', vscode.CompletionItemKind.Variable),
+    new Token('variable', /^{[a-zA-Z0-9]+}$/, 'other variable...', vscode.CompletionItemKind.Variable, '{$1}$0'),
     new Token('variable.loaded', /(?<=[Vv]ariable ([Gg]lobal )?[Ll]oad )[a-zA-Z0-9]+$/),
     new Token('comparator', /^==|>|<|>=|<=|!=$/, 'comparator', vscode.CompletionItemKind.Operator, '${1|==,>,<,>=,<=,!=|}'),
 

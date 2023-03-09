@@ -11,7 +11,7 @@ function after(wordsOffset, tokenIds) {
 }
 exports.default = [
     new Token_1.default('comment', /^#.+/, 'comment', vscode.CompletionItemKind.Text, '# ${1:comment...}').topLevel(),
-    new Token_1.default('variable', /^{[a-zA-Z0-9]+}$/, 'variable', vscode.CompletionItemKind.Variable),
+    new Token_1.default('variable', /^{[a-zA-Z0-9]+}$/, 'other variable...', vscode.CompletionItemKind.Variable, '{$1}$0'),
     new Token_1.default('variable.loaded', /(?<=[Vv]ariable ([Gg]lobal )?[Ll]oad )[a-zA-Z0-9]+$/),
     new Token_1.default('comparator', /^==|>|<|>=|<=|!=$/, 'comparator', vscode.CompletionItemKind.Operator, '${1|==,>,<,>=,<=,!=|}'),
     new Token_1.default('literal.color', /^"#[0-9a-fA-F]{6}"$/, 'color', vscode.CompletionItemKind.Color, '"#${1:FFFFFF}"'),
