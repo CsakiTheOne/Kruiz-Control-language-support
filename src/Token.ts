@@ -1,16 +1,19 @@
 import * as vscode from 'vscode';
+import Rule from './Rule';
 
 export default class Token {
     id: string;
     regex: RegExp;
-    label: string | undefined;
+    label: string = '';
     kind: vscode.CompletionItemKind | undefined;
     snippet: string | undefined;
+    rules: Rule[] = [];
+    isTopLevel: boolean = false;
 
     constructor(
         id: string,
         regex: RegExp,
-        label: string | undefined = undefined,
+        label: string = '',
         kind: vscode.CompletionItemKind | undefined = undefined,
         snippet: string | undefined = undefined,
     ) {
@@ -21,7 +24,21 @@ export default class Token {
         this.snippet = snippet;
     }
 
-    toString(): string {
-        return this.id;
+    toCompletionItem(): vscode.CompletionItem {
+        const item = new vscode.CompletionItem(this.label, this.kind);
+        if (this.snippet != undefined) {
+            item.insertText = new vscode.SnippetString(this.snippet);
+        }
+        return item;
+    }
+
+    setRules(rules: Rule[]): Token {
+        this.rules = rules;
+        return this;
+    }
+
+    topLevel(): Token {
+        this.isTopLevel = true;
+        return this;
     }
 }

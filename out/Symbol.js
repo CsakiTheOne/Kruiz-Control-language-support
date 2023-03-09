@@ -7,6 +7,13 @@ class Symbol {
         this.line = line;
         this.word = word;
     }
+    tabularData() {
+        return {
+            token: this.token.id,
+            content: this.content,
+            pos: `(${this.line},${this.word})`,
+        };
+    }
 }
 exports.default = Symbol;
 //# sourceMappingURL=Symbol.js.map

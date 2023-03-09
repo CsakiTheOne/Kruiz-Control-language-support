@@ -17,4 +17,12 @@ export default class Symbol {
         this.line = line;
         this.word = word;
     }
+
+    tabularData(): object {
+        return {
+            token: this.token.id,
+            content: this.content,
+            pos: `(${this.line},${this.word})`,
+        };
+    }
 }
