@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinToString = exports.setFoundVariables = exports.setFoundWebhooks = exports.setFoundUsers = exports.getFoundVariables = exports.getFoundWebhooks = exports.getFoundUsers = exports.getDefaultParams = void 0;
+exports.joinToString = exports.toSuggestions = exports.setFoundVariables = exports.setFoundWebhooks = exports.setFoundUsers = exports.getFoundVariables = exports.getFoundWebhooks = exports.getFoundUsers = exports.getDefaultParams = void 0;
 const defaultParams = [
     "_successful_", "_unsuccessful_", "_kc_event_id_",
 ];
 const defaultUsers = [
-    'NeshyLegacy', 'CsakiTheOne',
+    'CsakiTheOne', 'LenaTheNPC', 'Lightfall_23', 'NeshyLegacy',
 ];
 let foundUsers = [];
 let foundWebhooks = [];
@@ -47,6 +47,10 @@ exports.setFoundVariables = setFoundVariables;
 //
 // UTIL
 //
+function toSuggestions(list, prefix = '', suffix = '') {
+    return joinToString(list.map(item => `${prefix}${item}${suffix}`), ',', ',');
+}
+exports.toSuggestions = toSuggestions;
 function joinToString(list, separator = ', ', prefix = '') {
     if (list.length < 1)
         return '';

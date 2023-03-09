@@ -1,3 +1,4 @@
+/*
 import * as vscode from 'vscode';
 import { getDefaultParams, getFoundVariables, getFoundUsers, joinToString, getFoundWebhooks } from './declared';
 
@@ -131,3 +132,4 @@ export default [
                 ]),
         ]),
 ];
+*/

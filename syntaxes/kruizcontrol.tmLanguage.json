@@ -56,7 +56,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.function.kruizcontrol",
-					"match": "(?i)\\b(chat|delay|message|obs|play|variable)\\b"
+					"match": "(?i)\\b(chat|delay|discord|message|obs|play|random|variable)\\b"
 				}
 			]
 		},

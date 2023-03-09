@@ -2,7 +2,7 @@ const defaultParams: string[] = [
     "_successful_", "_unsuccessful_", "_kc_event_id_",
 ];
 const defaultUsers: string[] = [
-    'NeshyLegacy', 'CsakiTheOne',
+    'CsakiTheOne', 'LenaTheNPC', 'Lightfall_23', 'NeshyLegacy',
 ];
 
 let foundUsers: string[] = [];
@@ -46,6 +46,10 @@ export function setFoundVariables(values: string[]) {
 //
 // UTIL
 //
+export function toSuggestions(list: string[], prefix: string = '', suffix: string = ''): string {
+    return joinToString(list.map(item => `${prefix}${item}${suffix}`), ',', ',');
+}
+
 export function joinToString(list: string[], separator: string = ', ', prefix: string = ''): string {
     if (list.length < 1) return '';
 
