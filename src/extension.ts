@@ -61,6 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
 						.map(id => tokens.find(token => token.id == id))
 						.filter(token => token != undefined)
 						.map(token => token!.toCompletionItem());
+					if (rule.tokenIds.includes('literal.user')) availableCompletions = availableCompletions.concat(Symbols.userCompletions);
 					if (rule.tokenIds.includes('variable')) availableCompletions = availableCompletions.concat(Symbols.variableCompletions);
 					availableCompletions = availableCompletions.concat(ruleTokens);
 				});

@@ -5,6 +5,12 @@ import tokens from "./tokens";
 export default class Symbols {
     static list: Symbol[] = [];
 
+    static userCompletions: vscode.CompletionItem[] = [
+        new vscode.CompletionItem('CsakiTheOne', vscode.CompletionItemKind.User),
+        new vscode.CompletionItem('Lightfall_23', vscode.CompletionItemKind.User),
+        new vscode.CompletionItem('NeshyLegacy', vscode.CompletionItemKind.User),
+    ];
+
     static variableCompletions: vscode.CompletionItem[] = [];
 
     static update(symbols: Symbol[]) {

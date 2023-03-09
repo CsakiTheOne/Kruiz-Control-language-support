@@ -23,6 +23,7 @@ export default [
     new Token('literal.twitchCommand', /^![a-zA-Z0-9]+$/, 'Twitch command', vscode.CompletionItemKind.Method, '!${1:command}'),
     new Token('literal.permission', /^[bsfvmne]+$|^u$/),
 
+    // keywords
     new Token('keyword.if', /^[Ii]f$/, 'if', vscode.CompletionItemKind.Keyword).topLevel()
         .setRules([
             next(['literal.number', 'variable']),
@@ -31,6 +32,7 @@ export default [
             after(4, ['literal.number', 'variable']),
         ]),
 
+    // triggers
     new Token('event.onChannelPoint', /^[Oo]n[Cc]hannel[Pp]oint$/, 'onChannelPoint', vscode.CompletionItemKind.Event, 'onChannelPoint ${1:rewardName}').topLevel()
         .setRules([
             next(['literal.string', 'variable'])
@@ -48,13 +50,18 @@ export default [
             after(3, ['literal.string', 'variable']),
         ]),
 
+    // action chat
     new Token('action.chat', /^[Cc]hat$/, 'chat', vscode.CompletionItemKind.Keyword).topLevel()
         .setRules([next(['action.chat.send', 'action.chat.whisper'])]),
     new Token('action.chat.send', /^[Ss]end$/, 'send', vscode.CompletionItemKind.Function)
         .setRules([next(['literal.string', 'variable'])]),
     new Token('action.chat.whisper', /^[Ww]hisper$/, 'whisper', vscode.CompletionItemKind.Function)
-        .setRules([after(2, ['literal.string', 'variable'])]),
+        .setRules([
+            next(['literal.user']),
+            after(2, ['literal.string', 'variable']),
+        ]),
 
+    // action variable
     new Token('action.variable', /^[Vv]ariable$/, 'variable', vscode.CompletionItemKind.Keyword).topLevel()
         .setRules([
             next(['action.variable.load', 'action.variable.remove', 'action.variable.set', 'action.variable.global']),
