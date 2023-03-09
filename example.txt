@@ -1,0 +1,100 @@
+#----QOTD-------
+
+#Will roll a random question out from the selected pool below.
+#it will not ask a duplicate question in the next 5 times the command is used
+
+OnCommand e 5 !QOTD !Question
+Message Send QuestionRoll
+
+OnMessage QuestionRoll
+Random Number 1 20
+Variable Global Load QNumber
+Variable Global Load QNumber2
+Variable Global Load QNumber3
+Variable Global Load QNumber4
+Variable Global Load QNumber5
+#Chat Send "QNumbers Before = {QNumber},{QNumber2},{QNumber3},{QNumber4},{QNumber5}"
+#Chat Send " Number Roll {number}"
+If 2 {number} == {QNumber}
+    Message Send QuestionRoll
+    Exit
+If 2 {number} == {QNumber2}
+    Message Send QuestionRoll
+    Exit
+If 2 {number} == {QNumber3}
+    Message Send QuestionRoll
+    Exit
+If 2 {number} == {QNumber4}
+    Message Send QuestionRoll
+    Exit
+If 2 {number} == {QNumber5}
+    Message Send QuestionRoll
+    Exit
+Variable Global Set QNumber5 {QNumber4}
+Variable Global Set QNumber4 {QNumber3}
+Variable Global Set QNumber3 {QNumber2}
+Variable Global Set QNumber2 {QNumber}
+Variable Global Remove QNumber
+#Chat Send "Previous question removed!"
+Variable Global Set QNumber {number}
+#Chat Send "QNumbers  After = {QNumber},{QNumber2},{QNumber3},{QNumber4},{QNumber5}"
+If 2 {number} == 1
+    Chat Send "neshylLena : Question 1: What is your favourite Video Game?"
+    Exit
+If 2 {number} == 2
+    Chat Send "neshylLena : Question 2: What Video Game had the most impact on you?"
+    Exit
+If 2 {number} == 3
+    Chat Send "neshylLena : Question 3: What’s your most embarrassing moment in school?"
+    Exit
+If 2 {number} == 4
+    Chat Send "neshylLena : Question 4: What is the weirdest thing you have ever eaten?"
+    Exit
+If 2 {number} == 5
+    Chat Send "neshylLena : Question 5: What food should taste better than its appearance?"
+    Exit
+If 2 {number} == 6
+    Chat Send "neshylLena : Question 6: What period would you travel to if you were given a time machine?"
+    Exit
+If 2 {number} == 7
+    Chat Send "neshylLena : Question 7: Is there any food you would refuse to share?"
+    Exit
+If 2 {number} == 8
+    Chat Send "neshylLena : Question 8: What is your Favourite Video Game Genre?"
+    Exit
+If 2 {number} == 9
+    Chat Send "neshylLena : Question 9: If you could change your name for a day, what would it be?"
+    Exit
+If 2 {number} == 10
+    Chat Send "neshylLena : Question 10: What is your favourite season?"
+    Exit
+If 2 {number} == 11
+    Chat Send "neshylLena : Question 11: What skill would you like to master?"
+    Exit
+If 2 {number} == 12
+    Chat Send "neshylLena : Question 12: What was your very first Video game?"
+    Exit
+If 2 {number} == 13
+    Chat Send "neshylLena : Question 13: A game you think everyone should play?"
+    Exit
+If 2 {number} == 14
+    Chat Send "neshylLena : Question 14: What's a game you thought you'd like but actually hated?"
+    Exit
+If 2 {number} == 15
+    Chat Send "neshylLena : Question 15: What's a game you didn't expect to enjoy but ended up liking?"
+    Exit
+If 2 {number} == 16
+    Chat Send "neshylLena : Question 16: What game have you spent the most number of hours on?"
+    Exit
+If 2 {number} == 17
+    Chat Send "neshylLena : Question 17: What game did you last complete?"
+    Exit
+If 2 {number} == 18
+    Chat Send "neshylLena : Question 18: What's the best weapon you've ever used in a game?"
+    Exit
+If 2 {number} == 19
+    Chat Send "neshylLena : Question 19: Who is your favorite game from your childhood?"
+    Exit
+If 2 {number} == 20
+    Chat Send "neshylLena : Question 20: Are there any games you love playing but are really bad at?"
+    Exit
