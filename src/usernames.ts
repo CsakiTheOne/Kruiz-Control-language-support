@@ -1,1 +1,0 @@
-export default '<username>,NeshyLegacy,CsakiTheOne,Lightfall_23';

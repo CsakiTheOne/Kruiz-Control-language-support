@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const declared_1 = require("./declared");
 class Keyword {
     constructor(part, name) {
         this.children = [];
@@ -18,6 +19,7 @@ class Keyword {
     }
     toCompletitionItem() {
         const partKind = {
+            'defaultParam': vscode.CompletionItemKind.Property,
             'action': vscode.CompletionItemKind.Function,
             'subaction': vscode.CompletionItemKind.Function,
             'paramAny': vscode.CompletionItemKind.Value,
@@ -27,9 +29,14 @@ class Keyword {
         };
         const item = new vscode.CompletionItem(this.name, partKind[this.part]);
         switch (this.part) {
-            case 'paramAny':
+            case 'defaultParam':
+                item.insertText = new vscode.SnippetString('{1|' + (0, declared_1.joinToString)((0, declared_1.getDefaultParams)()) + '|}');
+                break;
             case 'paramUser':
+                item.insertText = new vscode.SnippetString('{1|<' + this.name + '>,' + (0, declared_1.joinToString)((0, declared_1.getUsers)()) + '|}');
+                break;
             case 'paramVar':
+            case 'paramAny':
                 item.insertText = new vscode.SnippetString('{1|<' + this.name + '>|}');
                 break;
             case 'paramString':
@@ -51,16 +58,6 @@ class Keyword {
     }
 }
 exports.default = [
-    new Keyword('action', 'one')
-        .setChildren([
-        new Keyword('subaction', 'two')
-            .setChildren([
-            new Keyword('subaction', 'three')
-                .setChildren([
-                new Keyword('subaction', 'four')
-            ])
-        ])
-    ]),
     new Keyword('action', 'chat')
         .setChildren([
         new Keyword('subaction', 'send').setChildren([new Keyword('paramString', 'message')]),
@@ -82,4 +79,4 @@ exports.default = [
         ]),
     ]),
 ];
-//# sourceMappingURL=actions.js.map
+//# sourceMappingURL=keywords.js.map

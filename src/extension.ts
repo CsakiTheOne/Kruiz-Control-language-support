@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import actions from './actions';
+import keywords from './keywords';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -14,12 +14,12 @@ export function activate(context: vscode.ExtensionContext) {
 			const lines = docText.split('\n');
 			const currentLine = document.lineAt(position.line);
 
-			const currentAction = actions.find(action => currentLine.text.trimStart().startsWith(action.name));
+			const currentAction = keywords.find(keyword => currentLine.text.trimStart().startsWith(keyword.name));
 			if (currentAction) {
 				return currentAction.getSubcompletitions(currentLine.text);
 			}
 			
-			return actions.map(action => action.toCompletitionItem());
+			return keywords.map(keyword => keyword.toCompletitionItem());
 		}
 	});
 
