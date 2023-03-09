@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getDefaultParams, getUsers, joinToString } from './declared';
+import { getDefaultParams, getLoadedVariables, getUsers, joinToString } from './declared';
 
 type Part = 'defaultParam' | 'action' | 'subaction' | 'paramAny' |
     'paramString' | 'paramUser' | 'paramVar';
@@ -37,14 +37,16 @@ class Keyword {
         const item = new vscode.CompletionItem(this.name, partKind[this.part]);
         switch (this.part) {
             case 'defaultParam':
-                item.insertText = new vscode.SnippetString('{1|' + joinToString(getDefaultParams()) + '|}');
+                item.insertText = new vscode.SnippetString('${1|' + joinToString(getDefaultParams(), ',') + '|}');
                 break;
             case 'paramUser':
-                item.insertText = new vscode.SnippetString('{1|<' + this.name + '>,' + joinToString(getUsers()) + '|}');
+                item.insertText = new vscode.SnippetString('${1|<' + this.name + '>,' + joinToString(getUsers(), ',') + '|}');
                 break;
             case 'paramVar':
+                item.insertText = new vscode.SnippetString('${1|<' + this.name + '>,' + joinToString(getLoadedVariables(), ',') + '|}');
+                break;
             case 'paramAny':
-                item.insertText = new vscode.SnippetString('{1|<' + this.name + '>|}');
+                item.insertText = new vscode.SnippetString('${1|<' + this.name + '>|}');
                 break;
             case 'paramString':
                 item.insertText = new vscode.SnippetString('"${1|' + this.name + '|}"');

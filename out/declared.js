@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinToString = exports.setFoundUsers = exports.getUsers = exports.getDefaultParams = void 0;
+exports.joinToString = exports.setFoundUsers = exports.getLoadedVariables = exports.getUsers = exports.getDefaultParams = void 0;
 const defaultParams = [
     "_successful_", "_unsuccessful_", "_kc_event_id_",
 ];
@@ -17,6 +17,10 @@ function getUsers() {
     return [defaultUsers, foundUsers].flat();
 }
 exports.getUsers = getUsers;
+function getLoadedVariables() {
+    return loadedVariables;
+}
+exports.getLoadedVariables = getLoadedVariables;
 function setFoundUsers(users) {
     foundUsers = users;
 }

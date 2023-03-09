@@ -16,6 +16,10 @@ export function getUsers(): string[] {
     return [defaultUsers, foundUsers].flat();
 }
 
+export function getLoadedVariables(): string[] {
+    return loadedVariables;
+}
+
 export function setFoundUsers(users: string[]) {
     foundUsers = users;
 }

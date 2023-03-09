@@ -30,14 +30,16 @@ class Keyword {
         const item = new vscode.CompletionItem(this.name, partKind[this.part]);
         switch (this.part) {
             case 'defaultParam':
-                item.insertText = new vscode.SnippetString('{1|' + (0, declared_1.joinToString)((0, declared_1.getDefaultParams)()) + '|}');
+                item.insertText = new vscode.SnippetString('${1|' + (0, declared_1.joinToString)((0, declared_1.getDefaultParams)(), ',') + '|}');
                 break;
             case 'paramUser':
-                item.insertText = new vscode.SnippetString('{1|<' + this.name + '>,' + (0, declared_1.joinToString)((0, declared_1.getUsers)()) + '|}');
+                item.insertText = new vscode.SnippetString('${1|<' + this.name + '>,' + (0, declared_1.joinToString)((0, declared_1.getUsers)(), ',') + '|}');
                 break;
             case 'paramVar':
+                item.insertText = new vscode.SnippetString('${1|<' + this.name + '>,' + (0, declared_1.joinToString)((0, declared_1.getLoadedVariables)(), ',') + '|}');
+                break;
             case 'paramAny':
-                item.insertText = new vscode.SnippetString('{1|<' + this.name + '>|}');
+                item.insertText = new vscode.SnippetString('${1|<' + this.name + '>|}');
                 break;
             case 'paramString':
                 item.insertText = new vscode.SnippetString('"${1|' + this.name + '|}"');
