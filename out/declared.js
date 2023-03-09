@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinToString = exports.setFoundUsers = exports.getLoadedVariables = exports.getUsers = exports.getDefaultParams = void 0;
+exports.joinToString = exports.setFoundVariables = exports.setFoundWebhooks = exports.setFoundUsers = exports.getFoundVariables = exports.getFoundWebhooks = exports.getFoundUsers = exports.getDefaultParams = void 0;
 const defaultParams = [
     "_successful_", "_unsuccessful_", "_kc_event_id_",
 ];
@@ -8,25 +8,49 @@ const defaultUsers = [
     'NeshyLegacy', 'CsakiTheOne',
 ];
 let foundUsers = [];
-let loadedVariables = [];
+let foundWebhooks = [];
+let foundVariables = [];
+//
+// GET
+//
 function getDefaultParams() {
     return defaultParams;
 }
 exports.getDefaultParams = getDefaultParams;
-function getUsers() {
+function getFoundUsers() {
     return [defaultUsers, foundUsers].flat();
 }
-exports.getUsers = getUsers;
-function getLoadedVariables() {
-    return loadedVariables;
+exports.getFoundUsers = getFoundUsers;
+function getFoundWebhooks() {
+    return foundWebhooks;
 }
-exports.getLoadedVariables = getLoadedVariables;
-function setFoundUsers(users) {
-    foundUsers = users;
+exports.getFoundWebhooks = getFoundWebhooks;
+function getFoundVariables() {
+    return foundVariables;
+}
+exports.getFoundVariables = getFoundVariables;
+//
+// SET
+//
+function setFoundUsers(values) {
+    foundUsers = values;
 }
 exports.setFoundUsers = setFoundUsers;
-function joinToString(list, separator = ', ') {
-    let text = list[0];
+function setFoundWebhooks(values) {
+    foundWebhooks = values;
+}
+exports.setFoundWebhooks = setFoundWebhooks;
+function setFoundVariables(values) {
+    foundVariables = values;
+}
+exports.setFoundVariables = setFoundVariables;
+//
+// UTIL
+//
+function joinToString(list, separator = ', ', prefix = '') {
+    if (list.length < 1)
+        return '';
+    let text = prefix + list[0];
     for (let i = 1; i < list.length; i++) {
         text += separator + list[i];
     }

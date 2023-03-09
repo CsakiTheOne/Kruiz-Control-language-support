@@ -6,26 +6,50 @@ const defaultUsers: string[] = [
 ];
 
 let foundUsers: string[] = [];
-let loadedVariables: string[] = [];
+let foundWebhooks: string[] = [];
+let foundVariables: string[] = [];
 
+//
+// GET
+//
 export function getDefaultParams(): string[] {
     return defaultParams;
 }
 
-export function getUsers(): string[] {
+export function getFoundUsers(): string[] {
     return [defaultUsers, foundUsers].flat();
 }
 
-export function getLoadedVariables(): string[] {
-    return loadedVariables;
+export function getFoundWebhooks(): string[] {
+    return foundWebhooks;
 }
 
-export function setFoundUsers(users: string[]) {
-    foundUsers = users;
+export function getFoundVariables(): string[] {
+    return foundVariables;
 }
 
-export function joinToString(list: string[], separator: string = ', '): string {
-    let text = list[0];
+//
+// SET
+//
+export function setFoundUsers(values: string[]) {
+    foundUsers = values;
+}
+
+export function setFoundWebhooks(values: string[]) {
+    foundWebhooks = values;
+}
+
+export function setFoundVariables(values: string[]) {
+    foundVariables = values;
+}
+
+//
+// UTIL
+//
+export function joinToString(list: string[], separator: string = ', ', prefix: string = ''): string {
+    if (list.length < 1) return '';
+
+    let text = prefix + list[0];
 
     for (let i = 1; i < list.length; i++) {
         text += separator + list[i];
