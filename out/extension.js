@@ -64,7 +64,15 @@ function activate(context) {
             return;
         }
     };
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('kruizcontrol', completionProvider, '', ' '), vscode.languages.registerDefinitionProvider('kruizcontrol', definitionProvider));
+    const hoverProvider = {
+        provideHover(document, position, token) {
+            // find the symbol
+            const lineSymbols = Symbols_1.default.list.filter(symbol => symbol.line == position.line);
+            const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
+            return { contents: [symbol?.token.id] };
+        }
+    };
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('kruizcontrol', completionProvider, '', ' '), vscode.languages.registerDefinitionProvider('kruizcontrol', definitionProvider), vscode.languages.registerHoverProvider('kruizcontrol', hoverProvider));
 }
 exports.activate = activate;
 //# sourceMappingURL=extension.js.map

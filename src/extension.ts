@@ -86,8 +86,23 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	};
 
+	const hoverProvider = {
+		provideHover(
+			document: vscode.TextDocument,
+			position: vscode.Position,
+			token: vscode.CancellationToken,
+		) {
+			// find the symbol
+			const lineSymbols = Symbols.list.filter(symbol => symbol.line == position.line);
+			const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
+
+			return {contents: [symbol?.token.id!]};
+		}
+	};
+
 	context.subscriptions.push(
 		vscode.languages.registerCompletionItemProvider('kruizcontrol', completionProvider, '', ' '),
 		vscode.languages.registerDefinitionProvider('kruizcontrol', definitionProvider),
+		vscode.languages.registerHoverProvider('kruizcontrol', hoverProvider),
 	);
 }
