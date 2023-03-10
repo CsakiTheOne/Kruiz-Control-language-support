@@ -6,6 +6,9 @@
 			"include": "#comments"
 		},
 		{
+			"include": "#strings"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
@@ -15,13 +18,16 @@
 			"include": "#actions"
 		},
 		{
+			"include": "#variables"
+		},
+		{
 			"include": "#ttw-commands"
 		},
 		{
-			"include": "#strings"
+			"include": "#numbers"
 		},
 		{
-			"include": "#numbers"
+			"include": "#operators"
 		},
 		{
 			"include": "#permissions"
@@ -55,8 +61,20 @@
 		"actions": {
 			"patterns": [
 				{
-					"name": "entity.name.function.kruizcontrol",
+					"name": "entity.name.class.kruizcontrol",
 					"match": "(?i)\\b(chat|delay|discord|message|obs|play|random|variable)\\b"
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"name": "variable.name.kruizcontrol",
+					"match": "(?i){[a-z0-9]+}"
+				},
+				{
+					"name": "variable.name.kruizcontrol",
+					"match": "(?i)(?<=variable (global )?load )[a-zA-Z0-9]+$"
 				}
 			]
 		},
@@ -84,6 +102,14 @@
 				{
 					"name": "constant.numeric.kruizcontrol",
 					"match": "\\b[0-9]+\\b"
+				}
+			]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"name": "keyword.operator.kruizcontrol",
+					"match": "\\b(==|<|>|<=|>=|!=)+\\b"
 				}
 			]
 		},
