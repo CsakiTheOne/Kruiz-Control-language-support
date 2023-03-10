@@ -8,9 +8,10 @@ export default class Token {
     kind: vscode.CompletionItemKind | undefined;
     snippet: string | undefined;
 
+    isTopLevel: boolean = false;
     description: string | undefined;
     rules: Rule[] = [];
-    isTopLevel: boolean = false;
+    parameters: string[] = [];
 
     constructor(
         id: string,
@@ -37,6 +38,11 @@ export default class Token {
         return item;
     }
 
+    topLevel(): Token {
+        this.isTopLevel = true;
+        return this;
+    }
+
     setDescription(text: string): Token {
         this.description = text;
         return this;
@@ -47,8 +53,8 @@ export default class Token {
         return this;
     }
 
-    topLevel(): Token {
-        this.isTopLevel = true;
+    setParameters(parameters: string[]): Token {
+        this.parameters = parameters;
         return this;
     }
 }

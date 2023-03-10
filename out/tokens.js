@@ -23,7 +23,7 @@ exports.default = [
     new Token_1.default('comparator', /^==|>|<|>=|<=|!=$/, 'comparator', vscode.CompletionItemKind.Operator, '${1|==,>,<,>=,<=,!=|}'),
     new Token_1.default('literal.color', /^"#[0-9a-fA-F]{6}"$/, 'color', vscode.CompletionItemKind.Color, '"#${1:FFFFFF}"'),
     new Token_1.default('literal.string', /^".*"$/, 'string', vscode.CompletionItemKind.Text, '"$1"$0'),
-    new Token_1.default('literal.number', /^[0-9]+$/),
+    new Token_1.default('literal.number', /^[0-9]+$/, 'number', vscode.CompletionItemKind.Operator, '${1:0}'),
     new Token_1.default('literal.twitchCommand', /^![a-zA-Z0-9]+$/, 'Twitch command', vscode.CompletionItemKind.Method, '!${1:command}'),
     new Token_1.default('literal.permission', /^[bsfvmne]+$|^u$/),
     // keywords
@@ -38,19 +38,22 @@ exports.default = [
     new Token_1.default('event.onChannelPoint', /^[Oo]n[Cc]hannel[Pp]oint$/, 'onChannelPoint', vscode.CompletionItemKind.Event, 'onChannelPoint ${1:rewardName}').topLevel()
         .setRules([
         next(['literal.string', 'variable'])
-    ]),
+    ])
+        .setParameters(['reward', 'user', 'message', 'data']),
     new Token_1.default('event.onCommand', /^[Oo]n[Cc]ommand$/, 'onCommand', vscode.CompletionItemKind.Event, 'onCommand ${1:permission} ${2:cooldown}').topLevel()
         .setRules([
         next(['literal.permission', 'variable']),
         after(2, ['literal.number', 'variable']),
         after(3, ['literal.twitchCommand']),
-    ]),
+    ])
+        .setParameters(['command', 'user', 'after', 'message', 'data', 'arg1', 'arg2', 'arg3']),
     new Token_1.default('event.onKeyword', /^[Oo]n[Cc]ommand$/, 'onKeyword', vscode.CompletionItemKind.Event, 'onKeyword ${1:permission} ${2:cooldown}').topLevel()
         .setRules([
         next(['literal.permission', 'variable']),
         after(2, ['literal.number', 'variable']),
         after(3, ['literal.string', 'variable']),
-    ]),
+    ])
+        .setParameters(['keyword', 'user', 'message', 'data', 'arg1', 'arg2', 'arg3']),
     // action chat
     new Token_1.default('action.chat', /^[Cc]hat$/, 'chat', vscode.CompletionItemKind.Class).topLevel()
         .setRules([next(['action.chat.send', 'action.chat.whisper'])]),
@@ -105,6 +108,15 @@ exports.default = [
         .setRules([next(['literal.string', 'variable'])]),
     new Token_1.default('action.discord.url', /^[Uu][Rr][Ll]$/, 'url', vscode.CompletionItemKind.Function)
         .setRules([next(['literal.string', 'variable'])]),
+    // action random
+    new Token_1.default('action.random', /^[Rr]andom$/, 'random', vscode.CompletionItemKind.Class).topLevel()
+        .setRules([next(['action.random.number'])]),
+    new Token_1.default('action.random.number', /^[Nn]umber$/, 'number', vscode.CompletionItemKind.Function, 'number ${1:min} ${2:max}')
+        .setRules([
+        next(['literal.number', 'variable']),
+        after(2, ['literal.number', 'variable']),
+    ])
+        .setParameters(['number']),
     // action variable
     new Token_1.default('action.variable', /^[Vv]ariable$/, 'variable', vscode.CompletionItemKind.Class).topLevel()
         .setRules([

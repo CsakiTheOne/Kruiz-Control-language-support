@@ -13,6 +13,18 @@ class Symbols {
             item.documentation = new vscode.MarkdownString(`Variable loaded on line ${variable.line + 1}.`);
             this.variableCompletions.push(item);
         });
+        // update parameters
+        this.list.filter(symbol => symbol.token.parameters.length > 0)
+            .forEach(symbol => {
+            symbol.token.parameters.forEach(param => {
+                const item = new vscode.CompletionItem(param, vscode.CompletionItemKind.Variable);
+                item.insertText = `{${param}}`;
+                item.documentation = new vscode.MarkdownString(`Parameter of ${symbol.content}. Defined on line ${symbol.line}.`);
+                this.variableCompletions.push(item);
+            });
+        });
+        // distinct variables
+        this.variableCompletions = [...new Set(this.variableCompletions)];
     }
 }
 exports.default = Symbols;

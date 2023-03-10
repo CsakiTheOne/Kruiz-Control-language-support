@@ -2,6 +2,7 @@
   "name": "kruiz-control-language-support",
   "displayName": "Kruiz-Control-language-support",
   "description": "",
+  "repository": "",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.76.0"

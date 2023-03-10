@@ -4,8 +4,9 @@ const vscode = require("vscode");
 class Token {
     constructor(id, regex, label = '', kind = undefined, snippet = undefined) {
         this.label = '';
-        this.rules = [];
         this.isTopLevel = false;
+        this.rules = [];
+        this.parameters = [];
         this.id = id;
         this.regex = regex;
         this.label = label;
@@ -22,6 +23,10 @@ class Token {
         }
         return item;
     }
+    topLevel() {
+        this.isTopLevel = true;
+        return this;
+    }
     setDescription(text) {
         this.description = text;
         return this;
@@ -30,8 +35,8 @@ class Token {
         this.rules = rules;
         return this;
     }
-    topLevel() {
-        this.isTopLevel = true;
+    setParameters(parameters) {
+        this.parameters = parameters;
         return this;
     }
 }

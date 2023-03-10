@@ -14,11 +14,12 @@ function updateSymbols(document) {
         const line = lines[lineIndex].trim();
         // Check full line tokens
         let lineResult = null;
-        //tokens.forEach(token => {
-        //	lineResult = line.match(token.regex);
-        //	if (lineResult) symbols.push(new Symbol(token, lineResult[0], lineIndex, 0));
-        //	//console.log(`Line: ${lineIndex} Token: ${token.id} Result: ${lineResult}`);
-        //});
+        tokens_1.default.forEach(token => {
+            lineResult = line.match(token.regex);
+            if (lineResult)
+                symbols.push(new Symbol_1.default(token, lineResult[0], lineIndex, 0));
+            //console.log(`Line: ${lineIndex} Token: ${token.id} Result: ${lineResult}`);
+        });
         // Check word by word tokens
         if (!lineResult) {
             const words = line.split(' ');
