@@ -14,10 +14,17 @@ class Token {
     }
     toCompletionItem() {
         const item = new vscode.CompletionItem(this.label, this.kind);
+        if (this.description != undefined) {
+            item.documentation = this.description;
+        }
         if (this.snippet != undefined) {
             item.insertText = new vscode.SnippetString(this.snippet);
         }
         return item;
+    }
+    setDescription(text) {
+        this.description = text;
+        return this;
     }
     setRules(rules) {
         this.rules = rules;

@@ -14,11 +14,11 @@ function updateSymbols(document: vscode.TextDocument) {
 		const line = lines[lineIndex].trim();
 		// Check full line tokens
 		let lineResult = null;
-		tokens.forEach(token => {
-			lineResult = line.match(token.regex);
-			if (lineResult) symbols.push(new Symbol(token, lineResult[0], lineIndex, 0));
-			//console.log(`Line: ${lineIndex} Token: ${token.id} Result: ${lineResult}`);
-		});
+		//tokens.forEach(token => {
+		//	lineResult = line.match(token.regex);
+		//	if (lineResult) symbols.push(new Symbol(token, lineResult[0], lineIndex, 0));
+		//	//console.log(`Line: ${lineIndex} Token: ${token.id} Result: ${lineResult}`);
+		//});
 		// Check word by word tokens
 		if (!lineResult) {
 			const words = line.split(' ');
@@ -61,6 +61,8 @@ export function activate(context: vscode.ExtensionContext) {
 						.map(id => tokens.find(token => token.id == id))
 						.filter(token => token != undefined)
 						.map(token => token!.toCompletionItem());
+					// contextual suggestions
+					if (rule.tokenIds.includes('literal.permission')) availableCompletions = availableCompletions.concat(Symbols.permissionCompletions);
 					if (rule.tokenIds.includes('literal.user')) availableCompletions = availableCompletions.concat(Symbols.userCompletions);
 					if (rule.tokenIds.includes('variable')) availableCompletions = availableCompletions.concat(Symbols.variableCompletions);
 					availableCompletions = availableCompletions.concat(ruleTokens);
@@ -72,7 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// suggest the found tokens
 			if (availableCompletions.length > 0) {
-				return availableCompletions;
+				return [... new Set(availableCompletions)];
 			}
 
 			// if no token found and line is empty, suggest top-level tokens
@@ -98,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// if variable, find loading place
 			if (symbol?.token.id == 'variable') {
-				const loader = Symbols.list.find(loader => 
+				const loader = Symbols.list.find(loader =>
 					loader.token.id == 'variable.loaded' &&
 					symbol.content == `{${loader.content}}`
 				);

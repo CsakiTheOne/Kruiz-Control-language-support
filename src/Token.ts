@@ -7,6 +7,8 @@ export default class Token {
     label: string = '';
     kind: vscode.CompletionItemKind | undefined;
     snippet: string | undefined;
+
+    description: string | undefined;
     rules: Rule[] = [];
     isTopLevel: boolean = false;
 
@@ -26,10 +28,18 @@ export default class Token {
 
     toCompletionItem(): vscode.CompletionItem {
         const item = new vscode.CompletionItem(this.label, this.kind);
+        if (this.description != undefined) {
+            item.documentation = this.description;
+        }
         if (this.snippet != undefined) {
             item.insertText = new vscode.SnippetString(this.snippet);
         }
         return item;
+    }
+
+    setDescription(text: string): Token {
+        this.description = text;
+        return this;
     }
 
     setRules(rules: Rule[]): Token {
