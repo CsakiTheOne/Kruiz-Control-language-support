@@ -23,12 +23,19 @@ class Token {
         }
         return item;
     }
+    getDefinitionToken() {
+        return new Token(this.id + '.definition', this.definitionRegex);
+    }
     topLevel() {
         this.isTopLevel = true;
         return this;
     }
     setDescription(text) {
         this.description = text;
+        return this;
+    }
+    setDefinitionRegex(regex) {
+        this.definitionRegex = regex;
         return this;
     }
     setRules(rules) {

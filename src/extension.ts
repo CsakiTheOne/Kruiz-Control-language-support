@@ -4,38 +4,6 @@ import Symbol from './Symbol';
 import Token from './Token';
 import Symbols from './Symbols';
 
-function updateSymbols(document: vscode.TextDocument) {
-	const docText = document.getText();
-	const lines = docText.split('\n');
-
-	// collect symbols in document
-	const symbols: Symbol[] = [];
-	for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-		const line = lines[lineIndex].trim();
-		// Check full line tokens
-		let lineResult = null;
-		tokens.forEach(token => {
-			lineResult = line.match(token.regex);
-			if (lineResult) symbols.push(new Symbol(token, lineResult[0], lineIndex, 0));
-			//console.log(`Line: ${lineIndex} Token: ${token.id} Result: ${lineResult}`);
-		});
-		// Check word by word tokens
-		if (!lineResult) {
-			const words = line.split(' ');
-			for (let wordIndex = 0; wordIndex < words.length; wordIndex++) {
-				const word = words[wordIndex];
-				tokens.forEach(token => {
-					const wordResult = word.match(token.regex);
-					const column = line.indexOf(word);
-					if (wordResult) symbols.push(new Symbol(token, wordResult[0], lineIndex, column, wordIndex));
-				});
-			}
-		}
-	}
-
-	Symbols.update(symbols);
-}
-
 export function activate(context: vscode.ExtensionContext) {
 
 	const completionProvider = {
@@ -45,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 			token: vscode.CancellationToken,
 			context: vscode.CompletionContext,
 		) {
-			updateSymbols(document);
+			Symbols.update(document);
 
 			const currentLineSymbols: Symbol[] = Symbols.list.filter(symbol => symbol.line == position.line);
 
@@ -92,21 +60,26 @@ export function activate(context: vscode.ExtensionContext) {
 			position: vscode.Position,
 			token: vscode.CancellationToken,
 		) {
-			updateSymbols(document);
+			Symbols.update(document);
 
 			// find the symbol
 			const lineSymbols = Symbols.list.filter(symbol => symbol.line == position.line);
 			const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
 
-			// if variable, find loading place
-			if (symbol?.token.id == 'variable') {
-				const loader = Symbols.list.find(loader =>
-					loader.token.id == 'variable.loaded' &&
-					symbol.content == `{${loader.content}}`
+			console.log(`Looking for definition of ${symbol?.content} (${symbol?.token})...`);
+
+			if (symbol?.token.definitionRegex != undefined) {
+				console.log(`Symbol has definition regex.`);
+				const definition = Symbols.list.find(definitionSymbol =>
+					definitionSymbol.token.id == symbol.token.getDefinitionToken().id &&
+					(
+						symbol.content == definitionSymbol.content ||
+						symbol.content == `{${definitionSymbol.content}}`
+					)
 				);
-				if (loader == undefined) return;
-				const loaderPos = new vscode.Position(loader?.line, loader.column);
-				return new vscode.Location(vscode.Uri.file(document.fileName), loaderPos);
+				if (definition == undefined) return;
+				const definitionPos = new vscode.Position(definition?.line, definition.column);
+				return new vscode.Location(vscode.Uri.file(document.fileName), definitionPos);
 			}
 
 			return;

@@ -10,6 +10,7 @@ export default class Token {
 
     isTopLevel: boolean = false;
     description: string | undefined;
+    definitionRegex: RegExp | undefined;
     rules: Rule[] = [];
     parameters: string[] = [];
 
@@ -38,6 +39,10 @@ export default class Token {
         return item;
     }
 
+    getDefinitionToken(): Token {
+        return new Token(this.id + '.definition', this.definitionRegex!);
+    }
+
     topLevel(): Token {
         this.isTopLevel = true;
         return this;
@@ -45,6 +50,11 @@ export default class Token {
 
     setDescription(text: string): Token {
         this.description = text;
+        return this;
+    }
+
+    setDefinitionRegex(regex: RegExp): Token {
+        this.definitionRegex = regex;
         return this;
     }
 

@@ -18,8 +18,8 @@ exports.default = [
     new Token_1.default('defaultparam.kcEventId', /^_kc_event_id_$/, '_kc_event_id_', vscode.CompletionItemKind.Constant).topLevel()
         .setDescription('A unique id for each event occurrence in Kruiz Control. If you need a unique identifier, use this. The id resets to 0 after 1,000,000,000.'),
     new Token_1.default('comment', /^#.+/, 'comment', vscode.CompletionItemKind.Text, '# ${1:comment...}').topLevel(),
-    new Token_1.default('variable', /^{[a-zA-Z0-9]+}$/, 'other variable...', vscode.CompletionItemKind.Variable, '{$1}$0'),
-    new Token_1.default('variable.loaded', /(?<=[Vv]ariable ([Gg]lobal )?[Ll]oad )[a-zA-Z0-9]+$/),
+    new Token_1.default('variable', /^{[a-zA-Z0-9]+}$/, 'other variable...', vscode.CompletionItemKind.Variable, '{$1}$0')
+        .setDefinitionRegex(/(?<=[Vv]ariable ([Gg]lobal )?[Ll]oad )[a-zA-Z0-9]+$/),
     new Token_1.default('comparator', /^==|>|<|>=|<=|!=$/, 'comparator', vscode.CompletionItemKind.Operator, '${1|==,>,<,>=,<=,!=|}'),
     new Token_1.default('literal.color', /^"#[0-9a-fA-F]{6}"$/, 'color', vscode.CompletionItemKind.Color, '"#${1:FFFFFF}"'),
     new Token_1.default('literal.string', /^".*"$/, 'string', vscode.CompletionItemKind.Text, '"$1"$0'),
