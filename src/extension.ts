@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { loadDoc } from './DocumantationReader';
+import Database from './Database';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -8,8 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.languages.registerCompletionItemProvider('kruizcontrol', {
 			provideCompletionItems(document, position, token, context) {
-				
-				return [];
+				return Database.getTokens().map(token => token.completion);
 			},
 		}, '', ' '),
 		//vscode.languages.registerDefinitionProvider('kruizcontrol', definitionProvider),
