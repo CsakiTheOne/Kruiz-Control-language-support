@@ -64,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// find the symbol
 			const lineSymbols = Symbols.list.filter(symbol => symbol.line == position.line);
-			const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
+			const symbol = lineSymbols.reverse().find(symbol => symbol.column <= position.character);
 
 			console.log(`Looking for definition of ${symbol?.content} (${symbol?.token})...`);
 
@@ -94,7 +94,7 @@ export function activate(context: vscode.ExtensionContext) {
 		) {
 			// find the symbol
 			const lineSymbols = Symbols.list.filter(symbol => symbol.line == position.line);
-			const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
+			const symbol = lineSymbols.reverse().find(symbol => symbol.column <= position.character);
 
 			return {contents: [symbol?.token.id!]};
 		}
