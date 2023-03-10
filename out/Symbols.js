@@ -113,8 +113,11 @@ Symbols.permissionCompletions = [
 ];
 Symbols.userCompletions = [
     new vscode.CompletionItem('CsakiTheOne', vscode.CompletionItemKind.User),
+    new vscode.CompletionItem('LenaTheNPC', vscode.CompletionItemKind.User),
     new vscode.CompletionItem('Lightfall_23', vscode.CompletionItemKind.User),
     new vscode.CompletionItem('NeshyLegacy', vscode.CompletionItemKind.User),
+    new vscode.CompletionItem('PrincezzRosalina', vscode.CompletionItemKind.User),
+    new vscode.CompletionItem('Xx_Nniko_xX', vscode.CompletionItemKind.User),
 ];
 Symbols.variableCompletions = [];
 //# sourceMappingURL=Symbols.js.map

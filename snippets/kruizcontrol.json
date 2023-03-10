@@ -1,1 +1,6 @@
-{}
+{
+    "variable global": {
+        "prefix": "global",
+        "body": "variable global $0"
+    }
+}

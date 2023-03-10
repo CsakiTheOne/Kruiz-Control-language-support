@@ -46,8 +46,11 @@ export default class Symbols {
 
     static userCompletions: vscode.CompletionItem[] = [
         new vscode.CompletionItem('CsakiTheOne', vscode.CompletionItemKind.User),
+        new vscode.CompletionItem('LenaTheNPC', vscode.CompletionItemKind.User),
         new vscode.CompletionItem('Lightfall_23', vscode.CompletionItemKind.User),
         new vscode.CompletionItem('NeshyLegacy', vscode.CompletionItemKind.User),
+        new vscode.CompletionItem('PrincezzRosalina', vscode.CompletionItemKind.User),
+        new vscode.CompletionItem('Xx_Nniko_xX', vscode.CompletionItemKind.User),
     ];
 
     static variableCompletions: vscode.CompletionItem[] = [];
