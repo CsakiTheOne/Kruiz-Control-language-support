@@ -66,8 +66,6 @@ export function activate(context: vscode.ExtensionContext) {
 			const lineSymbols = Symbols.list.filter(symbol => symbol.line == position.line);
 			const symbol = lineSymbols.reverse().find(symbol => symbol.column <= position.character);
 
-			console.log(`Looking for definition of ${symbol?.content} (${symbol?.token})...`);
-
 			if (symbol?.token.definitionRegex != undefined) {
 				console.log(`Symbol has definition regex.`);
 				const definition = Symbols.list.find(definitionSymbol =>
@@ -96,7 +94,13 @@ export function activate(context: vscode.ExtensionContext) {
 			const lineSymbols = Symbols.list.filter(symbol => symbol.line == position.line);
 			const symbol = lineSymbols.reverse().find(symbol => symbol.column <= position.character);
 
-			return {contents: [symbol?.token.id!]};
+			if (symbol == undefined) return { contents: [] };
+
+			const contents = [symbol.token.id];
+			if (symbol?.token.description != undefined) contents.push(symbol?.token.description);
+			if (symbol != undefined && symbol.token.parameters.length > 0) contents.push(`Parameters: ${symbol.token.parameters}`);
+
+			return { contents: contents };
 		}
 	};
 

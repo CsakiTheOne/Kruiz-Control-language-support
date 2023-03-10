@@ -49,8 +49,7 @@ function activate(context) {
             Symbols_1.default.update(document);
             // find the symbol
             const lineSymbols = Symbols_1.default.list.filter(symbol => symbol.line == position.line);
-            const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
-            console.log(`Looking for definition of ${symbol?.content} (${symbol?.token})...`);
+            const symbol = lineSymbols.reverse().find(symbol => symbol.column <= position.character);
             if (symbol?.token.definitionRegex != undefined) {
                 console.log(`Symbol has definition regex.`);
                 const definition = Symbols_1.default.list.find(definitionSymbol => definitionSymbol.token.id == symbol.token.getDefinitionToken().id &&
@@ -68,8 +67,15 @@ function activate(context) {
         provideHover(document, position, token) {
             // find the symbol
             const lineSymbols = Symbols_1.default.list.filter(symbol => symbol.line == position.line);
-            const symbol = lineSymbols.reverse().find(symbol => symbol.column < position.character);
-            return { contents: [symbol?.token.id] };
+            const symbol = lineSymbols.reverse().find(symbol => symbol.column <= position.character);
+            if (symbol == undefined)
+                return { contents: [] };
+            const contents = [symbol.token.id];
+            if (symbol?.token.description != undefined)
+                contents.push(symbol?.token.description);
+            if (symbol != undefined && symbol.token.parameters.length > 0)
+                contents.push(`Parameters: ${symbol.token.parameters}`);
+            return { contents: contents };
         }
     };
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('kruizcontrol', completionProvider, '', ' '), vscode.languages.registerDefinitionProvider('kruizcontrol', definitionProvider), vscode.languages.registerHoverProvider('kruizcontrol', hoverProvider));

@@ -53,7 +53,7 @@ export default [
             after(3, ['literal.twitchCommand']),
         ])
         .setParameters(['command', 'user', 'after', 'message', 'data', 'arg1', 'arg2', 'arg3']),
-    new Token('event.onKeyword', /^[Oo]n[Cc]ommand$/, 'onKeyword', vscode.CompletionItemKind.Event, 'onKeyword ${1:permission} ${2:cooldown}').topLevel()
+    new Token('event.onKeyword', /^[Oo]n[Kk]eyword$/, 'onKeyword', vscode.CompletionItemKind.Event, 'onKeyword ${1:permission} ${2:cooldown}').topLevel()
         .setRules([
             next(['literal.permission', 'variable']),
             after(2, ['literal.number', 'variable']),
