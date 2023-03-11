@@ -3,21 +3,18 @@ import Token from "./Token";
 
 export default class Database {
 
-    static tokenLiteralColor = new Token('literal.color', new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
+    static tokenLiteralColor = new Token('color', new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
         .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0'));
-    static tokenLiteralString = new Token('literal.string', new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
+    static tokenLiteralMessage = new Token('message', new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
         .setInsertText(new vscode.SnippetString('"$0"'));
-    static tokenLiteralNumber = new Token('literal.number', new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
-        .setInsertText(new vscode.SnippetString('${1:0}$0'));
-    static tokenLiteralComperator = new Token('literal.comperator', new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
+    static tokenLiteralComperator = new Token('.comperator', new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
         .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0'));
     static tokenVariableEmpty = new Token('variable', new vscode.CompletionItem('variable', vscode.CompletionItemKind.Operator))
         .setInsertText(new vscode.SnippetString('{$0}'));
 
     static baseTokens: Token[] = [
         this.tokenLiteralColor,
-        this.tokenLiteralString,
-        this.tokenLiteralNumber,
+        this.tokenLiteralMessage,
         this.tokenLiteralComperator,
         this.tokenVariableEmpty,
     ];

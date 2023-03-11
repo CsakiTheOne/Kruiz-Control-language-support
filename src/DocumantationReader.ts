@@ -25,10 +25,14 @@ export function loadDoc() {
                         
                         const completionItem = new vscode.CompletionItem(name);
                         completionItem.kind = type == 'trigger' ? vscode.CompletionItemKind.Event : vscode.CompletionItemKind.Function;
-                        if (format != undefined) completionItem.detail = format[0];
+                        if (format != undefined) {
+                            completionItem.detail = format[0];
+                        }
                         if (description != undefined) {
                             completionItem.documentation = description[0];
-                            tokens.push(new Token(name, completionItem));
+                            const token = new Token(name, completionItem);
+                            if (format != undefined) token.setRulesByFormat(format[0]);
+                            tokens.push(token);
                         }
                     }
                 });
