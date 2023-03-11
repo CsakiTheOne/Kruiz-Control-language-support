@@ -1,6 +1,8 @@
 {
   "name": "kruiz-control-language-support",
   "displayName": "Kruiz-Control-language-support",
+  "author": "CsakiTheOne",
+  "publisher": "CsakiTheOne",
   "description": "",
   "repository": "https://github.com/CsakiTheOne/Kruiz-Control-language-support",
   "version": "0.0.1",

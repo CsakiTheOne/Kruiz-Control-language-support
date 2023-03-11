@@ -26,7 +26,7 @@ export default class Database {
         return this.baseTokens.concat(this.docTokens);
     }
 
-    /*static permissionCompletions: vscode.CompletionItem[] = [
+    static permissionCompletions: vscode.CompletionItem[] = [
         (() => {
             const _ = new vscode.CompletionItem('everyone', vscode.CompletionItemKind.EnumMember);
             _.insertText = 'e';
@@ -63,7 +63,7 @@ export default class Database {
             _.documentation = 'Character: n';
             return _;
         })(),
-    ];*/
+    ];
 
     static userCompletions: vscode.CompletionItem[] = [
         new vscode.CompletionItem('CsakiTheOne', vscode.CompletionItemKind.User),
@@ -76,7 +76,7 @@ export default class Database {
 
     static variableCompletions: vscode.CompletionItem[] = [];
 
-    static update(document: vscode.TextDocument) {
+    static updateSymbols(document: vscode.TextDocument) {
         const docText = document.getText();
         const lines = docText.split('\n');
 

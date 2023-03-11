@@ -25,11 +25,15 @@ function loadDoc() {
                     const format = sub.match(/(?<=\*{2}Format\*{2} \| `).+(?=`)/);
                     const completionItem = new vscode.CompletionItem(name);
                     completionItem.kind = type == 'trigger' ? vscode.CompletionItemKind.Event : vscode.CompletionItemKind.Function;
-                    if (format != undefined)
+                    if (format != undefined) {
                         completionItem.detail = format[0];
+                    }
                     if (description != undefined) {
                         completionItem.documentation = description[0];
-                        tokens.push(new Token_1.default(name, completionItem));
+                        const token = new Token_1.default(name, new RegExp(`^${name}$`, 'i'), completionItem);
+                        if (format != undefined)
+                            token.setRulesByFormat(format[0]);
+                        tokens.push(token);
                     }
                 }
             });
