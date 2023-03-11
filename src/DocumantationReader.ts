@@ -30,7 +30,7 @@ export function loadDoc() {
                         }
                         if (description != undefined) {
                             completionItem.documentation = description[0];
-                            const token = new Token(name, completionItem);
+                            const token = new Token(name, new RegExp(`^${name}$`, 'i'), completionItem);
                             if (format != undefined) token.setRulesByFormat(format[0]);
                             tokens.push(token);
                         }

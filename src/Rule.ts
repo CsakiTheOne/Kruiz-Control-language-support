@@ -2,10 +2,10 @@ import Token from "./Token";
 
 export default class Rule {
     offset: number;
-    token: Token;
+    tokens: Token[];
 
-    constructor(offset: number, token: Token) {
+    constructor(offset: number, tokens: Token[]) {
         this.offset = offset;
-        this.token = token;
+        this.tokens = tokens;
     }
 }
