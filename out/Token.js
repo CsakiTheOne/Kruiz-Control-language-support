@@ -31,6 +31,10 @@ class Token {
         this.parameters = parameters;
         return this;
     }
+    setDefinition(regex) {
+        this.definition = new Token(`${this.id}.definition`, regex, new vscode.CompletionItem(`${this.completion.label} definition`));
+        return this;
+    }
 }
 exports.default = Token;
 //# sourceMappingURL=Token.js.map

@@ -58,10 +58,10 @@ function activate(context) {
             const description = symbol?.token.completion.documentation;
             const contents = [];
             // look for definition
-            if (symbol?.definition?.regex != undefined) {
+            if (symbol?.token.definition?.regex != undefined) {
                 console.log(`Symbol has definition regex.`);
-                const definition = Database_1.default.symbols.find(definitionSymbol => symbol.definition &&
-                    definitionSymbol.token.id == symbol.definition.id &&
+                const definition = Database_1.default.symbols.find(definitionSymbol => symbol.token.definition &&
+                    definitionSymbol.token.id == symbol.token.definition.id &&
                     (symbol.content == definitionSymbol.content ||
                         symbol.content == `{${definitionSymbol.content}}`));
                 if (definition == undefined)
@@ -81,10 +81,10 @@ function activate(context) {
             const description = symbol?.token.completion.documentation;
             const contents = [];
             // look for definition
-            if (symbol?.definition?.regex != undefined) {
+            if (symbol?.token.definition?.regex != undefined) {
                 console.log(`Symbol has definition regex.`);
-                const definition = Database_1.default.symbols.find(definitionSymbol => symbol.definition &&
-                    definitionSymbol.token.id == symbol.definition.id &&
+                const definition = Database_1.default.symbols.find(definitionSymbol => symbol.token.definition &&
+                    definitionSymbol.token.id == symbol.token.definition.id &&
                     (symbol.content == definitionSymbol.content ||
                         symbol.content == `{${definitionSymbol.content}}`));
                 if (definition == undefined)

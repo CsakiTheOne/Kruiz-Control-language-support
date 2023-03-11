@@ -40,7 +40,8 @@ export default class Token {
         return this;
     }
 
-    setDefinition(token: Token) {
-        this.definition = token;
+    setDefinition(regex: RegExp): Token {
+        this.definition = new Token(`${this.id}.definition`, regex, new vscode.CompletionItem(`${this.completion.label} definition`));
+        return this;
     }
 }

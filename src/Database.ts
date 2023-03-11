@@ -17,7 +17,8 @@ export default class Database {
             new Token('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')),
             new Token('variable', /^{[a-z0-9]+}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
-                .setInsertText(new vscode.SnippetString('{$0}')),
+                .setInsertText(new vscode.SnippetString('{$0}'))
+                .setDefinition(/(?<=variable (global )?load )[a-z0-9]+$/i),
             new Token('permission', /^[bsfvmne]$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
                 .setInsertText('bsfvmne'),
         );
