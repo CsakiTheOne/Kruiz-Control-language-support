@@ -91,12 +91,14 @@ function activate(context) {
                     return;
                 const definitionPos = new vscode.Position(definition?.position.line, definition.position.character);
                 //return new vscode.Location(vscode.Uri.file(document.fileName), definitionPos);
-                contents.push(`Defined on line ${definitionPos.line}.`);
+                contents.push(`Defined on line ${definitionPos.line + 1}.`);
             }
             if (format)
                 contents.push(format);
             if (description)
                 contents.push(description.toString());
+            if (symbol)
+                contents.push(symbol.token.id);
             if (symbol && contents.length < 1)
                 contents.push(`No info found about ${symbol.content} (${symbol.token.id})`);
             return { contents: contents };

@@ -18,6 +18,11 @@ export default class Token {
         this.isTopLevel = isTopLevel;
     }
 
+    merge(other: Token): Token {
+        this.rules = [... new Set(this.rules.concat(other.rules))];
+        return this;
+    }
+
     setInsertText(insertText: string | vscode.SnippetString | undefined): Token {
         this.completion.insertText = insertText;
         return this;

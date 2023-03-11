@@ -2,9 +2,10 @@ import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 import Token from './Token';
 import Database from './Database';
+import Rule from './Rule';
 
 export function loadDoc() {
-    const tokens: Token[] = [];
+    let tokens: Token[] = [];
 
     fetch('https://raw.githubusercontent.com/Kruiser8/Kruiz-Control/master/js/Documentation.md')
         .then(response => response.text())
@@ -22,7 +23,8 @@ export function loadDoc() {
                         const type = name.startsWith('On') ? 'trigger' : 'action';
                         const description = sub.match(/(?<=\*{2}Info\*{2} \| ).+/);
                         const format = sub.match(/(?<=\*{2}Format\*{2} \| `).+(?=`)/);
-                        
+
+                        // add last name part as function
                         const completionItem = new vscode.CompletionItem(name);
                         completionItem.kind = type == 'trigger' ? vscode.CompletionItemKind.Event : vscode.CompletionItemKind.Function;
                         if (format != undefined) {
@@ -30,10 +32,10 @@ export function loadDoc() {
                         }
                         if (description != undefined) {
                             completionItem.documentation = description[0];
-                            const token = new Token(name, new RegExp(`^${name}`, 'gi'), completionItem, true);
-                            if (format != undefined) token.setRulesByFormat(format[0]);
-                            tokens.push(token);
                         }
+                        const mainToken = new Token(name.replace(' ', '.'), new RegExp(`^${name}`, 'i'), completionItem, true);
+                        if (format != undefined) mainToken.setRulesByFormat(format[0]);
+                        tokens.push(mainToken);
                     }
                 });
             });

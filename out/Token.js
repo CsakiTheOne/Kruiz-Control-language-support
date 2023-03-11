@@ -12,6 +12,10 @@ class Token {
         this.completion = completion;
         this.isTopLevel = isTopLevel;
     }
+    merge(other) {
+        this.rules = [...new Set(this.rules.concat(other.rules))];
+        return this;
+    }
     setInsertText(insertText) {
         this.completion.insertText = insertText;
         return this;

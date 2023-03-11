@@ -12,15 +12,19 @@ export default class Database {
         this.baseTokens.push(
             new Token('color', /^"#[0-9a-f]{6}"$/i, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
                 .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0')),
-            new Token('message', /^".+"$/, new vscode.CompletionItem('message', vscode.CompletionItemKind.Text))
+            new Token('string', /^".+"$/, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
                 .setInsertText(new vscode.SnippetString('"$0"')),
             new Token('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')),
             new Token('variable', /^{[a-z0-9]+}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
                 .setInsertText(new vscode.SnippetString('{$0}'))
                 .setDefinition(/(?<=variable (global )?load )[a-z0-9]+$/i),
-            new Token('permission', /^[bsfvmne]$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
+            new Token('permission', /^[bsfvmne]+$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
                 .setInsertText('bsfvmne'),
+            new Token('number', /^[0-9]+$/i, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
+                .setInsertText(new vscode.SnippetString('${1:0}$0')),
+            new Token('Twitch command', /^![a-z0-9]+$/i, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Operator))
+                .setInsertText(new vscode.SnippetString('!{1:command}$0')),
         );
     }
 

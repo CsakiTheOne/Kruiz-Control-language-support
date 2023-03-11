@@ -11,7 +11,7 @@ class Symbol {
         return {
             tokenId: this.token.id,
             content: this.content,
-            position: `l:${this.position.line},c:${this.position.character},w:${this.wordPosition})`,
+            position: `l:${this.position.line},c:${this.position.character},w:${this.wordPosition}`,
             rules: this.token.rules.map(rule => `${rule.offset}: ${rule.tokens.map(token => token.id)}`),
         };
     }
