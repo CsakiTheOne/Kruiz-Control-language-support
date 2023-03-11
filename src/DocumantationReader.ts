@@ -18,10 +18,10 @@ export function loadDoc() {
                 const subSections = section.split(/\n#### /g);
                 subSections.forEach(sub => {
                     const subName = sub.match(/.+/);
-                    if (subName) {
+                    const description = sub.match(/(?<=\*{2}Info\*{2} \| ).+/);
+                    if (subName && subName[0].split(' ').length < 5 && description) {
                         const name = subName[0];
                         const type = name.startsWith('On') ? 'trigger' : 'action';
-                        const description = sub.match(/(?<=\*{2}Info\*{2} \| ).+/);
                         const format = sub.match(/(?<=\*{2}Format\*{2} \| `).+(?=`)/);
 
                         // add last name part as function
@@ -30,9 +30,7 @@ export function loadDoc() {
                         if (format != undefined) {
                             completionItem.detail = format[0];
                         }
-                        if (description != undefined) {
-                            completionItem.documentation = description[0];
-                        }
+                        completionItem.documentation = description[0];
                         const mainToken = new Token(name.replace(' ', '.'), new RegExp(`^${name}`, 'i'), completionItem, true);
                         if (format != undefined) mainToken.setRulesByFormat(format[0]);
                         tokens.push(mainToken);
