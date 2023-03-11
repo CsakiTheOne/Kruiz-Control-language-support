@@ -5,7 +5,7 @@
   "publisher": "CsakiTheOne",
   "description": "",
   "repository": "https://github.com/CsakiTheOne/Kruiz-Control-language-support",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.76.0"
   },

@@ -24,7 +24,7 @@ export default class Database {
             new Token('number', /^[0-9]+$/i, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('${1:0}$0')),
             new Token('Twitch command', /^![a-z0-9]+$/i, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Operator))
-                .setInsertText(new vscode.SnippetString('!{1:command}$0')),
+                .setInsertText(new vscode.SnippetString('!${1:command}$0')),
         );
     }
 

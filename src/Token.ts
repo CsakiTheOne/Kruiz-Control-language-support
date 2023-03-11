@@ -32,9 +32,13 @@ export default class Token {
         this.rules = [];
         const params = format.trim().split(' ');
         for (let i = 0; i < params.length; i++) {
-            const param = params[i].replace(/<|>/g, '');
-            const token = Database.baseTokens.find(baseToken => baseToken.id == param);
-            const fallbackToken = new Token(param, /^fallback$/, new vscode.CompletionItem(param));
+            const paramName = params[i].replace(/<|>/g, '');
+            const parameterMap: Map<string, string> = new Map([
+                ['message', 'string'],
+                ['command', 'Twitch command'],
+            ]);
+            const token = Database.baseTokens.find(baseToken => baseToken.id == parameterMap.get(paramName) || baseToken.id == paramName);
+            const fallbackToken = new Token(paramName, /^fallback$/, new vscode.CompletionItem(paramName));
             this.rules.push(new Rule(i, [token ? token : fallbackToken, Database.baseTokens.find(baseToken => baseToken.id == 'variable')!]));
         }
         return this;

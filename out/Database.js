@@ -6,14 +6,14 @@ const Symbol_1 = require("./Symbol");
 class Database {
     static initBaseTokens() {
         this.baseTokens.push(new Token_1.default('color', /^"#[0-9a-f]{6}"$/i, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
-            .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0')), new Token_1.default('message', /^".+"$/, new vscode.CompletionItem('message', vscode.CompletionItemKind.Text))
+            .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0')), new Token_1.default('string', /^".+"$/, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
             .setInsertText(new vscode.SnippetString('"$0"')), new Token_1.default('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
             .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')), new Token_1.default('variable', /^{[a-z0-9]+}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
             .setInsertText(new vscode.SnippetString('{$0}'))
             .setDefinition(/(?<=variable (global )?load )[a-z0-9]+$/i), new Token_1.default('permission', /^[bsfvmne]+$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
             .setInsertText('bsfvmne'), new Token_1.default('number', /^[0-9]+$/i, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
             .setInsertText(new vscode.SnippetString('${1:0}$0')), new Token_1.default('Twitch command', /^![a-z0-9]+$/i, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Operator))
-            .setInsertText(new vscode.SnippetString('!{1:command}$0')));
+            .setInsertText(new vscode.SnippetString('!${1:command}$0')));
     }
     static getTokens() {
         return this.baseTokens.concat(this.docTokens);
