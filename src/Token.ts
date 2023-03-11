@@ -39,4 +39,8 @@ export default class Token {
         this.parameters = parameters;
         return this;
     }
+
+    setDefinition(token: Token) {
+        this.definition = token;
+    }
 }
