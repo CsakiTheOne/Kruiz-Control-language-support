@@ -1,1 +1,1 @@
-{"version":3,"file":"Rule.js","sourceRoot":"","sources":["../src/Rule.ts"],"names":[],"mappings":";;AAAA,MAAqB,IAAI;IAIrB,YAAY,MAAc,EAAE,QAAkB;QAC1C,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC;IAC7B,CAAC;CACJ;AARD,uBAQC"}
+{"version":3,"file":"Rule.js","sourceRoot":"","sources":["../src/Rule.ts"],"names":[],"mappings":";;AAEA,MAAqB,IAAI;IAIrB,YAAY,MAAc,EAAE,KAAY;QACpC,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;IACvB,CAAC;CACJ;AARD,uBAQC"}
