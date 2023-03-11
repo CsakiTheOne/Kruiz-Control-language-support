@@ -1,31 +1,25 @@
+import * as vscode from "vscode";
 import Token from "./Token";
 
 export default class Symbol {
     token: Token;
     content: string;
-    line: number;
-    column: number;
-    word: number | undefined;
+    position: vscode.Position;
+    wordPosition: number;
 
-    constructor(
-        token: Token,
-        content: string,
-        line: number,
-        column: number,
-        word: number | undefined = undefined,
-    ) {
+    constructor(token: Token, content: string, position: vscode.Position, wordPosition: number) {
         this.token = token;
         this.content = content;
-        this.line = line;
-        this.column = column;
-        this.word = word;
+        this.position = position;
+        this.wordPosition = wordPosition;
     }
 
-    tabularData(): object {
+    toSimpleObject(): {} {
         return {
-            token: this.token.id,
+            tokenId: this.token.id,
             content: this.content,
-            pos: `(${this.line},${this.word})`,
-        };
+            position: `l:${this.position.line},c:${this.position.character},w:${this.wordPosition})`,
+            rules: this.token.rules.map(rule => `${rule.offset}: ${rule.tokens.map(token => token.id)}`),
+        }
     }
 }

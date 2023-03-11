@@ -1,9 +1,32 @@
 import * as vscode from 'vscode';
-import Symbol from "./Symbol";
-import tokens from "./tokens";
+import Token from "./Token";
+import Symbol from './Symbol';
 
-export default class Symbols {
-    static list: Symbol[] = [];
+export default class Database {
+
+    static baseTokens: Token[] = [];
+    static docTokens: Token[] = [];
+    static symbols: Symbol[] = [];
+
+    static initBaseTokens() {
+        this.baseTokens.push(
+            new Token('color', /^"#[0-9a-f]{6}"$/i, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
+                .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0')),
+            new Token('message', /^".+"$/, new vscode.CompletionItem('message', vscode.CompletionItemKind.Text))
+                .setInsertText(new vscode.SnippetString('"$0"')),
+            new Token('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
+                .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')),
+            new Token('variable', /^{[a-z0-9]+}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
+                .setInsertText(new vscode.SnippetString('{$0}'))
+                .setDefinition(/(?<=variable (global )?load )[a-z0-9]+$/i),
+            new Token('permission', /^[bsfvmne]$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
+                .setInsertText('bsfvmne'),
+        );
+    }
+
+    static getTokens(): Token[] {
+        return this.baseTokens.concat(this.docTokens);
+    }
 
     static permissionCompletions: vscode.CompletionItem[] = [
         (() => {
@@ -55,7 +78,7 @@ export default class Symbols {
 
     static variableCompletions: vscode.CompletionItem[] = [];
 
-    static update(document: vscode.TextDocument) {
+    static updateSymbols(document: vscode.TextDocument) {
         const docText = document.getText();
         const lines = docText.split('\n');
 
@@ -65,38 +88,38 @@ export default class Symbols {
             const line = lines[lineIndex].trim();
             // Check full line tokens
             let lineResult = null;
-            tokens.forEach(token => {
+            this.getTokens().forEach(token => {
                 lineResult = line.match(token.regex);
-                if (lineResult) symbols.push(new Symbol(token, lineResult[0], lineIndex, 0));
+                if (lineResult) symbols.push(new Symbol(token, lineResult[0], new vscode.Position(lineIndex, 0), 0));
             });
             // Check full line definitions
-            tokens.filter(token => token.definitionRegex != undefined)
+            this.getTokens().filter(token => token.definition != undefined)
                 .forEach(token => {
-                    lineResult = line.match(token.definitionRegex!);
-                    if (lineResult) symbols.push(new Symbol(token.getDefinitionToken(), lineResult[0], lineIndex, 0));
+                    lineResult = line.match(token.definition?.regex!);
+                    if (lineResult) symbols.push(new Symbol(token.definition!, lineResult[0], new vscode.Position(lineIndex, 0), 0));
                 });
             // Check word by word tokens
             if (!lineResult) {
                 const words = line.split(' ');
                 for (let wordIndex = 0; wordIndex < words.length; wordIndex++) {
                     const word = words[wordIndex];
-                    tokens.forEach(token => {
+                    this.getTokens().forEach(token => {
                         const wordResult = word.match(token.regex);
-                        const column = line.indexOf(word);
-                        if (wordResult) symbols.push(new Symbol(token, wordResult[0], lineIndex, column, wordIndex));
+                        const character = line.indexOf(word);
+                        if (wordResult) symbols.push(new Symbol(token, wordResult[0], new vscode.Position(lineIndex, character), wordIndex));
                     });
                     // Check word by word definitions
-                    tokens.filter(token => token.definitionRegex != undefined)
+                    this.getTokens().filter(token => token.definition?.regex != undefined)
                         .forEach(token => {
-                            const wordResult = line.match(token.definitionRegex!);
-                            const column = line.indexOf(word);
-                            if (wordResult) symbols.push(new Symbol(token.getDefinitionToken(), wordResult[0], lineIndex, column, wordIndex));
+                            const wordResult = line.match(token.definition?.regex!);
+                            const character = line.indexOf(word);
+                            if (wordResult) symbols.push(new Symbol(token.definition!, wordResult[0], new vscode.Position(lineIndex, character), wordIndex));
                         });
                 }
             }
         }
 
-        this.list = symbols;
+        this.symbols = symbols;
 
         // update variables
         this.variableCompletions = [];
@@ -104,7 +127,7 @@ export default class Symbols {
             .forEach(variable => {
                 const item = new vscode.CompletionItem(variable.content, vscode.CompletionItemKind.Variable);
                 item.insertText = `{${variable.content}}`;
-                item.documentation = new vscode.MarkdownString(`Variable loaded on line ${variable.line + 1}.`);
+                item.documentation = new vscode.MarkdownString(`Variable loaded on line ${variable.position.line + 1}.`);
                 this.variableCompletions.push(item);
             });
         // update parameters
@@ -113,7 +136,7 @@ export default class Symbols {
                 symbol.token.parameters.forEach(param => {
                     const item = new vscode.CompletionItem(param, vscode.CompletionItemKind.Variable);
                     item.insertText = `{${param}}`;
-                    item.documentation = new vscode.MarkdownString(`Parameter of ${symbol.content}. Defined on line ${symbol.line}.`);
+                    item.documentation = new vscode.MarkdownString(`Parameter of ${symbol.content}. Defined on line ${symbol.position.line}.`);
                     this.variableCompletions.push(item);
                 });
             });
@@ -121,4 +144,5 @@ export default class Symbols {
         this.variableCompletions = [... new Set(this.variableCompletions)];
 
     }
+
 }

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Rule {
-    constructor(offset, tokenIds) {
+    constructor(offset, tokens) {
         this.offset = offset;
-        this.tokenIds = tokenIds;
+        this.tokens = tokens;
     }
 }
 exports.default = Rule;

@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Symbol {
-    constructor(token, content, line, column, word = undefined) {
+    constructor(token, content, position, wordPosition) {
         this.token = token;
         this.content = content;
-        this.line = line;
-        this.column = column;
-        this.word = word;
+        this.position = position;
+        this.wordPosition = wordPosition;
     }
-    tabularData() {
+    toSimpleObject() {
         return {
-            token: this.token.id,
+            tokenId: this.token.id,
             content: this.content,
-            pos: `(${this.line},${this.word})`,
+            position: `l:${this.position.line},c:${this.position.character},w:${this.wordPosition})`,
+            rules: this.token.rules.map(rule => `${rule.offset}: ${rule.tokens.map(token => token.id)}`),
         };
     }
 }

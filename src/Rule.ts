@@ -1,9 +1,11 @@
+import Token from "./Token";
+
 export default class Rule {
     offset: number;
-    tokenIds: string[];
+    tokens: Token[];
 
-    constructor(offset: number, tokenIds: string[]) {
+    constructor(offset: number, tokens: Token[]) {
         this.offset = offset;
-        this.tokenIds = tokenIds;
+        this.tokens = tokens;
     }
 }

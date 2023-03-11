@@ -1,70 +1,47 @@
 import * as vscode from 'vscode';
 import Rule from './Rule';
+import Database from './Database';
 
 export default class Token {
     id: string;
     regex: RegExp;
-    label: string = '';
-    kind: vscode.CompletionItemKind | undefined;
-    snippet: string | undefined;
-
-    isTopLevel: boolean = false;
-    description: string | undefined;
-    definitionRegex: RegExp | undefined;
+    completion: vscode.CompletionItem;
+    isTopLevel: boolean;
     rules: Rule[] = [];
     parameters: string[] = [];
+    definition: Token | undefined;
 
-    constructor(
-        id: string,
-        regex: RegExp,
-        label: string = '',
-        kind: vscode.CompletionItemKind | undefined = undefined,
-        snippet: string | undefined = undefined,
-    ) {
+    constructor(id: string, regex: RegExp, completion: vscode.CompletionItem, isTopLevel: boolean = false) {
         this.id = id;
         this.regex = regex;
-        this.label = label;
-        this.kind = kind;
-        this.snippet = snippet;
+        this.completion = completion;
+        this.isTopLevel = isTopLevel;
     }
 
-    toCompletionItem(): vscode.CompletionItem {
-        const item = new vscode.CompletionItem(this.label, this.kind);
-        if (this.description != undefined) {
-            item.documentation = this.description;
+    setInsertText(insertText: string | vscode.SnippetString | undefined): Token {
+        this.completion.insertText = insertText;
+        return this;
+    }
+
+    setRulesByFormat(format: string): Token {
+        this.rules = [];
+        const params = format.trim().split(' ');
+        for (let i = 0; i < params.length; i++) {
+            const param = params[i].replace(/<|>/g, '');
+            const token = Database.baseTokens.find(baseToken => baseToken.id == param);
+            const fallbackToken = new Token(param, /^fallback$/, new vscode.CompletionItem(param));
+            this.rules.push(new Rule(i, [token ? token : fallbackToken, Database.baseTokens.find(baseToken => baseToken.id == 'variable')!]));
         }
-        if (this.snippet != undefined) {
-            item.insertText = new vscode.SnippetString(this.snippet);
-        }
-        return item;
-    }
-
-    getDefinitionToken(): Token {
-        return new Token(this.id + '.definition', this.definitionRegex!);
-    }
-
-    topLevel(): Token {
-        this.isTopLevel = true;
-        return this;
-    }
-
-    setDescription(text: string): Token {
-        this.description = text;
-        return this;
-    }
-
-    setDefinitionRegex(regex: RegExp): Token {
-        this.definitionRegex = regex;
-        return this;
-    }
-
-    setRules(rules: Rule[]): Token {
-        this.rules = rules;
         return this;
     }
 
     setParameters(parameters: string[]): Token {
         this.parameters = parameters;
+        return this;
+    }
+
+    setDefinition(regex: RegExp): Token {
+        this.definition = new Token(`${this.id}.definition`, regex, new vscode.CompletionItem(`${this.completion.label} definition`));
         return this;
     }
 }

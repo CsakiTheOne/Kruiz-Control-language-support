@@ -1,49 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const Rule_1 = require("./Rule");
+const Database_1 = require("./Database");
 class Token {
-    constructor(id, regex, label = '', kind = undefined, snippet = undefined) {
-        this.label = '';
-        this.isTopLevel = false;
+    constructor(id, regex, completion, isTopLevel = false) {
         this.rules = [];
         this.parameters = [];
         this.id = id;
         this.regex = regex;
-        this.label = label;
-        this.kind = kind;
-        this.snippet = snippet;
+        this.completion = completion;
+        this.isTopLevel = isTopLevel;
     }
-    toCompletionItem() {
-        const item = new vscode.CompletionItem(this.label, this.kind);
-        if (this.description != undefined) {
-            item.documentation = this.description;
+    setInsertText(insertText) {
+        this.completion.insertText = insertText;
+        return this;
+    }
+    setRulesByFormat(format) {
+        this.rules = [];
+        const params = format.trim().split(' ');
+        for (let i = 0; i < params.length; i++) {
+            const param = params[i].replace(/<|>/g, '');
+            const token = Database_1.default.baseTokens.find(baseToken => baseToken.id == param);
+            const fallbackToken = new Token(param, /^fallback$/, new vscode.CompletionItem(param));
+            this.rules.push(new Rule_1.default(i, [token ? token : fallbackToken, Database_1.default.baseTokens.find(baseToken => baseToken.id == 'variable')]));
         }
-        if (this.snippet != undefined) {
-            item.insertText = new vscode.SnippetString(this.snippet);
-        }
-        return item;
-    }
-    getDefinitionToken() {
-        return new Token(this.id + '.definition', this.definitionRegex);
-    }
-    topLevel() {
-        this.isTopLevel = true;
-        return this;
-    }
-    setDescription(text) {
-        this.description = text;
-        return this;
-    }
-    setDefinitionRegex(regex) {
-        this.definitionRegex = regex;
-        return this;
-    }
-    setRules(rules) {
-        this.rules = rules;
         return this;
     }
     setParameters(parameters) {
         this.parameters = parameters;
+        return this;
+    }
+    setDefinition(regex) {
+        this.definition = new Token(`${this.id}.definition`, regex, new vscode.CompletionItem(`${this.completion.label} definition`));
         return this;
     }
 }
