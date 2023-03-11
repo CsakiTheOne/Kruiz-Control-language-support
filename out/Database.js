@@ -1,10 +1,17 @@
 "use strict";
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const Token_1 = require("./Token");
 const Symbol_1 = require("./Symbol");
 class Database {
+    static initBaseTokens() {
+        this.baseTokens.push(new Token_1.default('color', /^"#[0-9a-f]{6}"$/i, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
+            .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0')), new Token_1.default('message', /^".+"$/, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
+            .setInsertText(new vscode.SnippetString('"$0"')), new Token_1.default('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
+            .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')), new Token_1.default('variable', /^{[a-z0-9]}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
+            .setInsertText(new vscode.SnippetString('{$0}')), new Token_1.default('permission', /^[bsfvmne]$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
+            .setInsertText('bsfvmne'));
+    }
     static getTokens() {
         return this.baseTokens.concat(this.docTokens);
     }
@@ -76,21 +83,7 @@ class Database {
     }
 }
 exports.default = Database;
-_a = Database;
-Database.tokenLiteralColor = new Token_1.default('color', /^"#[0-9a-f]{6}"$/i, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
-    .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0'));
-Database.tokenLiteralMessage = new Token_1.default('message', /^".+"$/, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
-    .setInsertText(new vscode.SnippetString('"$0"'));
-Database.tokenLiteralComperator = new Token_1.default('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
-    .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0'));
-Database.tokenVariableEmpty = new Token_1.default('variable', /^{[a-z0-9]}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Operator))
-    .setInsertText(new vscode.SnippetString('{$0}'));
-Database.baseTokens = [
-    _a.tokenLiteralColor,
-    _a.tokenLiteralMessage,
-    _a.tokenLiteralComperator,
-    _a.tokenVariableEmpty,
-];
+Database.baseTokens = [];
 Database.docTokens = [];
 Database.symbols = [];
 Database.permissionCompletions = [

@@ -30,7 +30,7 @@ function loadDoc() {
                     }
                     if (description != undefined) {
                         completionItem.documentation = description[0];
-                        const token = new Token_1.default(name, new RegExp(`^${name}$`, 'i'), completionItem);
+                        const token = new Token_1.default(name, new RegExp(`^${name}$`, 'i'), completionItem, true);
                         if (format != undefined)
                             token.setRulesByFormat(format[0]);
                         tokens.push(token);
@@ -38,6 +38,7 @@ function loadDoc() {
                 }
             });
         });
+        console.table(tokens);
         Database_1.default.docTokens = tokens;
     });
 }

@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const vscode = require("vscode");
 const Rule_1 = require("./Rule");
 const Database_1 = require("./Database");
 class Token {
-    constructor(id, regex, completion) {
+    constructor(id, regex, completion, isTopLevel = false) {
         this.rules = [];
         this.parameters = [];
         this.id = id;
         this.regex = regex;
         this.completion = completion;
+        this.isTopLevel = isTopLevel;
     }
     setInsertText(insertText) {
         this.completion.insertText = insertText;
@@ -18,10 +20,10 @@ class Token {
         this.rules = [];
         const params = format.replace(this.id, '').trim().split(' ');
         for (let i = 0; i < params.length; i++) {
-            const param = params[i].replace(/<|>/, '');
+            const param = params[i].replace(/<|>/g, '');
             const token = Database_1.default.baseTokens.find(baseToken => baseToken.id == param);
-            if (token != undefined)
-                this.rules.push(new Rule_1.default(i, [token, Database_1.default.tokenVariableEmpty]));
+            const fallbackToken = new Token(`fallback.${param}`, /^fallback$/, new vscode.CompletionItem(param));
+            this.rules.push(new Rule_1.default(i + 1, [token ? token : fallbackToken, Database_1.default.baseTokens.find(baseToken => baseToken.id == 'variable')]));
         }
         return this;
     }

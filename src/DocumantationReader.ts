@@ -30,13 +30,14 @@ export function loadDoc() {
                         }
                         if (description != undefined) {
                             completionItem.documentation = description[0];
-                            const token = new Token(name, new RegExp(`^${name}$`, 'i'), completionItem);
+                            const token = new Token(name, new RegExp(`^${name}$`, 'i'), completionItem, true);
                             if (format != undefined) token.setRulesByFormat(format[0]);
                             tokens.push(token);
                         }
                     }
                 });
             });
+            console.table(tokens);
             Database.docTokens = tokens;
         });
 }

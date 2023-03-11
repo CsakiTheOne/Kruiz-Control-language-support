@@ -5,6 +5,7 @@ const vscode = require("vscode");
 const DocumantationReader_1 = require("./DocumantationReader");
 const Database_1 = require("./Database");
 function activate(context) {
+    Database_1.default.initBaseTokens();
     (0, DocumantationReader_1.loadDoc)();
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('kruizcontrol', {
         provideCompletionItems(document, position, token, context) {
@@ -33,14 +34,14 @@ function activate(context) {
                 });
             });
             // debug line
-            console.table(Database_1.default.symbols /*.map(s => s.tabularData())*/);
+            console.table(Database_1.default.symbols.map(s => s.toSimpleObject()));
             // suggest the found tokens
             if (availableCompletions.length > 0) {
                 return [...new Set(availableCompletions)];
             }
             // if no token found and line is empty, suggest top-level tokens
             if (currentLineSymbols.length < 1) {
-                return Database_1.default.getTokens() /*.filter(token => token.isTopLevel)*/.map(token => token.completion);
+                return Database_1.default.getTokens().filter(token => token.isTopLevel).map(token => token.completion);
             }
             return [];
         },

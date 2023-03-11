@@ -6,14 +6,16 @@ export default class Token {
     id: string;
     regex: RegExp;
     completion: vscode.CompletionItem;
+    isTopLevel: boolean;
     rules: Rule[] = [];
     parameters: string[] = [];
     definition: Token | undefined;
 
-    constructor(id: string, regex: RegExp, completion: vscode.CompletionItem) {
+    constructor(id: string, regex: RegExp, completion: vscode.CompletionItem, isTopLevel: boolean = false) {
         this.id = id;
         this.regex = regex;
         this.completion = completion;
+        this.isTopLevel = isTopLevel;
     }
 
     setInsertText(insertText: string | vscode.SnippetString | undefined): Token {
@@ -25,9 +27,10 @@ export default class Token {
         this.rules = [];
         const params = format.replace(this.id, '').trim().split(' ');
         for (let i = 0; i < params.length; i++) {
-            const param = params[i].replace(/<|>/, '');
+            const param = params[i].replace(/<|>/g, '');
             const token = Database.baseTokens.find(baseToken => baseToken.id == param);
-            if (token != undefined) this.rules.push(new Rule(i, [token, Database.tokenVariableEmpty]));
+            const fallbackToken = new Token(`fallback.${param}`, /^fallback$/, new vscode.CompletionItem(param));
+            this.rules.push(new Rule(i + 1, [token ? token : fallbackToken, Database.baseTokens.find(baseToken => baseToken.id == 'variable')!]));
         }
         return this;
     }
