@@ -12,6 +12,7 @@ function activate(context) {
             Database_1.default.updateSymbols(document);
             const currentLineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line);
             const currentWordIndex = document.lineAt(position.line).text.trimStart().split(' ').length - 1;
+            let relevantRuleTokens = [];
             // look for available tokens to suggest based on the collected symbols
             let availableCompletions = [];
             currentLineSymbols.forEach(symbol => {
@@ -19,6 +20,7 @@ function activate(context) {
                     const isRelevant = symbol.wordPosition != undefined && currentWordIndex == symbol.wordPosition + rule.offset;
                     if (!isRelevant)
                         return;
+                    relevantRuleTokens = rule.tokens.map(token => token.id);
                     const ruleTokens = rule.tokens
                         .map(ruleToken => Database_1.default.getTokens().find(token => token == ruleToken))
                         .filter(token => token != undefined)
@@ -37,6 +39,7 @@ function activate(context) {
             console.table(Database_1.default.symbols.map(s => s.toSimpleObject()));
             // suggest the found tokens
             if (availableCompletions.length > 0) {
+                availableCompletions.push(new vscode.CompletionItem(`Debug - relevant tokens: ${relevantRuleTokens}`));
                 return [...new Set(availableCompletions)];
             }
             // if no token found and line is empty, suggest top-level tokens
@@ -45,7 +48,26 @@ function activate(context) {
             }
             return [];
         },
-    }, '', ' '));
+    }, '', ' '), 
+    //vscode.languages.registerDefinitionProvider('kruizcontrol', definitionProvider),
+    vscode.languages.registerHoverProvider('kruizcontrol', {
+        provideHover(document, position, token) {
+            Database_1.default.updateSymbols(document);
+            // find the symbol
+            const lineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line);
+            const symbol = lineSymbols.reverse().find(symbol => symbol.position.character <= position.character);
+            const format = symbol?.token.completion.detail;
+            const description = symbol?.token.completion.documentation;
+            const contents = [];
+            if (format)
+                contents.push(format);
+            if (description)
+                contents.push(description.toString());
+            if (symbol && contents.length < 1)
+                contents.push(`No info found about ${symbol.content} (${symbol.token.id})`);
+            return { contents: contents };
+        },
+    }));
 }
 exports.activate = activate;
 //# sourceMappingURL=extension.js.map

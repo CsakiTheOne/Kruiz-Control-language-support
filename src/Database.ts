@@ -12,11 +12,11 @@ export default class Database {
         this.baseTokens.push(
             new Token('color', /^"#[0-9a-f]{6}"$/i, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
                 .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0')),
-            new Token('message', /^".+"$/, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
+            new Token('message', /^".+"$/, new vscode.CompletionItem('message', vscode.CompletionItemKind.Text))
                 .setInsertText(new vscode.SnippetString('"$0"')),
             new Token('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')),
-            new Token('variable', /^{[a-z0-9]}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
+            new Token('variable', /^{[a-z0-9]+}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
                 .setInsertText(new vscode.SnippetString('{$0}')),
             new Token('permission', /^[bsfvmne]$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
                 .setInsertText('bsfvmne'),

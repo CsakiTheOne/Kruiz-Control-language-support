@@ -25,12 +25,12 @@ export default class Token {
 
     setRulesByFormat(format: string): Token {
         this.rules = [];
-        const params = format.replace(this.id, '').trim().split(' ');
+        const params = format.trim().split(' ');
         for (let i = 0; i < params.length; i++) {
             const param = params[i].replace(/<|>/g, '');
             const token = Database.baseTokens.find(baseToken => baseToken.id == param);
-            const fallbackToken = new Token(`fallback.${param}`, /^fallback$/, new vscode.CompletionItem(param));
-            this.rules.push(new Rule(i + 1, [token ? token : fallbackToken, Database.baseTokens.find(baseToken => baseToken.id == 'variable')!]));
+            const fallbackToken = new Token(param, /^fallback$/, new vscode.CompletionItem(param));
+            this.rules.push(new Rule(i, [token ? token : fallbackToken, Database.baseTokens.find(baseToken => baseToken.id == 'variable')!]));
         }
         return this;
     }
