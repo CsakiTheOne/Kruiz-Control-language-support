@@ -30,20 +30,18 @@ function loadDoc() {
                     formatSegments.forEach(segment => {
                         const tokenId = `${formatTillThis}${segment}`;
                         let regex = /^$/;
-                        let completion = new vscode.CompletionItem(segment);
+                        // Parameter
                         if (segment.includes('<')) {
                             const param = segment.replace(/<|>/g, '');
-                            completion.label = param;
-                        }
-                        else {
-                            regex = new RegExp(`\\b(?<=${formatTillThis})${segment}\\b`, 'gi');
-                            completion.kind = vscode.CompletionItemKind.Class;
-                        }
-                        const token = new Token_1.default(tokenId, regex, completion);
-                        if (segment.includes('<')) {
+                            const token = new Token_1.default(tokenId, regex, getCompletionFromParam(format[0], param));
                             params.push(token);
                         }
+                        // Not parameter
                         else {
+                            regex = new RegExp(`\\b(?<=${formatTillThis})${segment}\\b`, 'gi');
+                            let completion = new vscode.CompletionItem(segment);
+                            completion.kind = vscode.CompletionItemKind.Class;
+                            const token = new Token_1.default(tokenId, regex, completion);
                             keywords.push(token);
                         }
                         formatTillThis += segment + ' ';
@@ -72,6 +70,29 @@ function loadDoc() {
     });
 }
 exports.loadDoc = loadDoc;
+function getCompletionFromParam(format, name) {
+    const item = new vscode.CompletionItem(name);
+    // Simple name checking
+    switch (name) {
+        case 'color':
+            item.kind = vscode.CompletionItemKind.Color;
+            item.insertText = new vscode.SnippetString('"#{1:FFFFFF}"');
+            break;
+        case 'command':
+            item.kind = vscode.CompletionItemKind.Method;
+            item.insertText = new vscode.SnippetString('!${1:command}');
+            break;
+        case 'message':
+            item.kind = vscode.CompletionItemKind.Text;
+            item.insertText = new vscode.SnippetString('"$1"');
+            break;
+        default:
+            item.kind = undefined;
+            item.insertText = new vscode.SnippetString(`{1:${name}}`);
+            break;
+    }
+    return item;
+}
 function pushOrMergeToken(tokens, token) {
     const similarToken = tokens.find(t => t.id == token.id);
     if (similarToken) {
