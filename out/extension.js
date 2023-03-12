@@ -4,49 +4,49 @@ exports.activate = void 0;
 const vscode = require("vscode");
 const DocumantationReader_1 = require("./DocumantationReader");
 const Database_1 = require("./Database");
+function getWordIndex(text, charIndex) {
+    // Trim the text to remove any leading or trailing whitespace
+    const trimmedText = text.trimStart();
+    // Initialize the word index and the current index to 0
+    let wordIndex = 0;
+    let currentIndex = 0;
+    // Loop through each word in the text
+    for (const word of trimmedText.split(/\s+/)) {
+        // Get the start and end indices of the current word
+        const startIndex = currentIndex;
+        const endIndex = startIndex + word.length;
+        // If the character index is within the current word, return the word index
+        if (startIndex <= charIndex && charIndex < endIndex) {
+            return wordIndex;
+        }
+        // Increment the word index and the current index for the next word
+        wordIndex++;
+        currentIndex = endIndex + 1; // Add 1 for the space after the word
+    }
+    // If the character index is beyond the end of the text, return the last word index
+    return wordIndex - 1;
+}
 function activate(context) {
     Database_1.default.initBaseTokens();
     (0, DocumantationReader_1.loadDoc)();
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider('kruizcontrol', {
         provideCompletionItems(document, position, token, context) {
             Database_1.default.updateSymbols(document);
-            const currentLineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line);
-            const currentWordIndex = document.lineAt(position.line).text.trimStart().split(' ').length - 1;
-            let relevantRuleTokens = [];
-            // look for available tokens to suggest based on the collected symbols
-            let availableCompletions = [];
-            currentLineSymbols.forEach(symbol => {
-                symbol.token.rules.forEach(rule => {
-                    //const isRelevant = symbol.wordPosition != undefined && currentWordIndex == symbol.wordPosition + rule.offset;
-                    if ( /*!isRelevant*/true)
-                        return;
-                    relevantRuleTokens = rule.tokens.map(token => token.id);
-                    const ruleTokens = rule.tokens
-                        .map(ruleToken => Database_1.default.getTokens().find(token => token == ruleToken))
-                        .filter(token => token != undefined)
-                        .map(token => token.completion);
-                    // contextual suggestions
-                    if (rule.tokens.find(token => token.id == 'permission'))
-                        availableCompletions = availableCompletions.concat(Database_1.default.permissionCompletions);
-                    if (rule.tokens.find(token => token.id == 'user'))
-                        availableCompletions = availableCompletions.concat(Database_1.default.userCompletions);
-                    if (rule.tokens.find(token => token.id == 'variable'))
-                        availableCompletions = availableCompletions.concat(Database_1.default.variableCompletions);
-                    availableCompletions = availableCompletions.concat(ruleTokens);
-                });
-            });
-            // debug line
-            console.table(Database_1.default.symbols.map(s => s.toSimpleObject()));
-            // suggest the found tokens
-            if (availableCompletions.length > 0) {
-                availableCompletions.push(new vscode.CompletionItem(`Debug - relevant tokens: ${relevantRuleTokens}`));
-                return [...new Set(availableCompletions)];
+            const lineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line);
+            // If line has symbols, check the rules
+            if (lineSymbols.length > 0) {
+                const currentLine = document.lineAt(position.line).text;
+                const currentWordIndex = getWordIndex(currentLine, position.character);
+                // Look for relevant rules
+                const relevantRules = lineSymbols.map(symbol => {
+                    const wordIndex = getWordIndex(currentLine, symbol.position.character);
+                    return symbol.token.rules.filter(rule => wordIndex + rule.offset == currentWordIndex);
+                }).flat();
+                // Return the tokens in the rules
+                return relevantRules.flatMap(rule => rule.tokens.map(token => token.completion));
             }
-            // if no token found and line is empty, suggest top-level tokens
-            if (currentLineSymbols.length < 1) {
-                return Database_1.default.getTokens().filter(token => token.isTopLevel).map(token => token.completion);
-            }
-            return [];
+            // Return top-level tokens if the line has no symbols
+            return Database_1.default.getTokens().filter(token => token.isTopLevel).map(token => token.completion);
         },
     }, '', ' '), vscode.languages.registerDefinitionProvider('kruizcontrol', {
         provideDefinition(document, position, token) {

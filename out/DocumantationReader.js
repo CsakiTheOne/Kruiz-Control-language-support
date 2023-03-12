@@ -38,7 +38,6 @@ function loadDoc() {
                         else {
                             regex = new RegExp(`\\b(?<=${formatTillThis})${segment}\\b`, 'gi');
                             completion.kind = vscode.CompletionItemKind.Class;
-                            completion.documentation = description[0];
                         }
                         const token = new Token_1.default(tokenId, regex, completion);
                         if (segment.includes('<')) {
@@ -56,34 +55,15 @@ function loadDoc() {
                         }
                     }
                     keywords[keywords.length - 1].completion.detail = format[0];
-                    keywords[keywords.length - 1].completion.kind = vscode.CompletionItemKind.Function;
+                    keywords[keywords.length - 1].completion.documentation = description[0];
+                    keywords[keywords.length - 1].completion.kind = type == 'action' ? vscode.CompletionItemKind.Function : vscode.CompletionItemKind.Event;
                     for (let i = 0; i < params.length; i++) {
                         const param = params[i];
                         keywords[keywords.length - 1].rules.push(new Rule_1.default(i + 1, [param]));
                     }
                     keywords.forEach(keyword => {
-                        const similarToken = tokens.find(t => t.id == keyword.id);
-                        if (similarToken) {
-                            similarToken.rules = similarToken.rules.concat(keyword.rules);
-                        }
-                        else {
-                            tokens.push(keyword);
-                        }
+                        tokens = pushOrMergeToken(tokens, keyword);
                     });
-                    params.forEach(param => {
-                        tokens.push(param);
-                    });
-                    // add last name part as function
-                    /*const completionItem = new vscode.CompletionItem(name);
-                    completionItem.kind = type == 'trigger' ? vscode.CompletionItemKind.Event : vscode.CompletionItemKind.Function;
-                    if (format != undefined) {
-                        completionItem.detail = format[0];
-                        console.log(format[0]);
-                    }
-                    completionItem.documentation = description[0];
-                    const mainToken = new Token(name.replace(' ', '.'), new RegExp(`^${name}`, 'i'), completionItem, true);
-                    if (format != undefined) mainToken.setRulesByFormat(format[0]);
-                    tokens.push(mainToken);*/
                 }
             });
         });
@@ -92,4 +72,30 @@ function loadDoc() {
     });
 }
 exports.loadDoc = loadDoc;
+function pushOrMergeToken(tokens, token) {
+    const similarToken = tokens.find(t => t.id == token.id);
+    if (similarToken) {
+        const newRules = [];
+        const allRules = similarToken.rules.concat(token.rules);
+        allRules.forEach(rule => {
+            const similarRule = newRules.find(r => r.offset == rule.offset);
+            if (similarRule) {
+                let newTokens = [];
+                const allTokens = similarRule.tokens.concat(rule.tokens);
+                allTokens.forEach(subToken => {
+                    newTokens = pushOrMergeToken(newTokens, subToken);
+                });
+                similarRule.tokens = newTokens;
+            }
+            else {
+                newRules.push(rule);
+            }
+        });
+        similarToken.rules = newRules;
+    }
+    else {
+        tokens.push(token);
+    }
+    return tokens;
+}
 //# sourceMappingURL=DocumantationReader.js.map
