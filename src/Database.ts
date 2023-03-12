@@ -10,20 +10,20 @@ export default class Database {
 
     static initBaseTokens() {
         this.baseTokens.push(
-            new Token('color', /^"#[0-9a-f]{6}"$/i, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
+            new Token('color', /"#[0-9a-f]{6}"/gi, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
                 .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0')),
-            new Token('string', /^".+"$/, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
+            new Token('string', /"(?:\\.|[^\\"])*"/g, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
                 .setInsertText(new vscode.SnippetString('"$0"')),
-            new Token('comperator', /^(==|<|>|<=|>=|!=)$/, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
+            new Token('comperator', /(==|<|>|<=|>=|!=)/g, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')),
-            new Token('variable', /^{[a-z0-9]+}$/i, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
+            new Token('variable', /{[a-z0-9]+}/gi, new vscode.CompletionItem('variable', vscode.CompletionItemKind.Variable))
                 .setInsertText(new vscode.SnippetString('{$0}'))
                 .setDefinition(/(?<=variable (global )?load )[a-z0-9]+$/i),
-            new Token('permission', /^[bsfvmne]+$/i, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
+            new Token('permission', /\b[bsfvmne]+\b/gi, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
                 .setInsertText('bsfvmne'),
-            new Token('number', /^[0-9]+$/i, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
+            new Token('number', /[0-9]+/gi, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('${1:0}$0')),
-            new Token('Twitch command', /^![a-z0-9]+$/i, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Operator))
+            new Token('Twitch command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('!${1:command}$0')),
         );
     }
@@ -82,52 +82,48 @@ export default class Database {
 
     static variableCompletions: vscode.CompletionItem[] = [];
 
+    static findLineColForByte(document: string, index: number): vscode.Position {
+        const lines = document.split('\n');
+        let totalLength = 0;
+        let lineStartPos = 0;
+        for (let lineNo = 0; lineNo < lines.length; lineNo++) {
+            totalLength += lines[lineNo].length + 1; // Because we removed the '\n' during split.
+            if (index < totalLength) {
+                const colNo = index - lineStartPos;
+                return new vscode.Position(lineNo, colNo);
+            }
+            lineStartPos = totalLength;
+        }
+        return new vscode.Position(0, 0);
+    }
+
+    static findSymbols(document: string): Symbol[] {
+        const symbols: Symbol[] = [];
+        for (const token of this.getTokens()) {
+            let match;
+            token.regex.lastIndex = 0;
+            while ((match = token.regex.exec(document)) != null) {
+                const symbol: Symbol = new Symbol(token, match[0], this.findLineColForByte(document, match.index));
+                if (!symbols.includes(symbol)) {
+                    symbols.push(symbol);
+                }
+                token.regex.lastIndex++;
+            }
+        }
+        return symbols;
+    }
+
     static updateSymbols(document: vscode.TextDocument) {
         const docText = document.getText();
         const lines = docText.split('\n');
 
         // collect symbols in document
-        const symbols: Symbol[] = [];
-        for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-            const line = lines[lineIndex].trim();
-            // Check full line tokens
-            let lineResult = null;
-            this.getTokens().forEach(token => {
-                lineResult = line.match(token.regex);
-                if (lineResult) symbols.push(new Symbol(token, lineResult[0], new vscode.Position(lineIndex, 0), 0));
-            });
-            // Check full line definitions
-            this.getTokens().filter(token => token.definition != undefined)
-                .forEach(token => {
-                    lineResult = line.match(token.definition?.regex!);
-                    if (lineResult) symbols.push(new Symbol(token.definition!, lineResult[0], new vscode.Position(lineIndex, 0), 0));
-                });
-            // Check word by word tokens
-            if (!lineResult) {
-                const words = line.split(' ');
-                for (let wordIndex = 0; wordIndex < words.length; wordIndex++) {
-                    const word = words[wordIndex];
-                    this.getTokens().forEach(token => {
-                        const wordResult = word.match(token.regex);
-                        const character = line.indexOf(word);
-                        if (wordResult) symbols.push(new Symbol(token, wordResult[0], new vscode.Position(lineIndex, character), wordIndex));
-                    });
-                    // Check word by word definitions
-                    this.getTokens().filter(token => token.definition?.regex != undefined)
-                        .forEach(token => {
-                            const wordResult = line.match(token.definition?.regex!);
-                            const character = line.indexOf(word);
-                            if (wordResult) symbols.push(new Symbol(token.definition!, wordResult[0], new vscode.Position(lineIndex, character), wordIndex));
-                        });
-                }
-            }
-        }
-
-        this.symbols = symbols;
+        this.symbols = this.findSymbols(docText);
+        console.log(`Found ${this.symbols.length} symbols in document`)
 
         // update variables
         this.variableCompletions = [];
-        symbols.filter(symbol => symbol.token.id == 'variable.definition')
+        this.symbols.filter(symbol => symbol.token.id == 'variable.definition')
             .forEach(variable => {
                 const item = new vscode.CompletionItem(variable.content, vscode.CompletionItemKind.Variable);
                 item.insertText = `{${variable.content}}`;
@@ -135,7 +131,7 @@ export default class Database {
                 this.variableCompletions.push(item);
             });
         // update parameters
-        symbols.filter(symbol => symbol.token.parameters.length > 0)
+        this.symbols.filter(symbol => symbol.token.parameters.length > 0)
             .forEach(symbol => {
                 symbol.token.parameters.forEach(param => {
                     const item = new vscode.CompletionItem(param, vscode.CompletionItemKind.Variable);

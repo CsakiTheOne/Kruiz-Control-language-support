@@ -17,8 +17,8 @@ function activate(context) {
             let availableCompletions = [];
             currentLineSymbols.forEach(symbol => {
                 symbol.token.rules.forEach(rule => {
-                    const isRelevant = symbol.wordPosition != undefined && currentWordIndex == symbol.wordPosition + rule.offset;
-                    if (!isRelevant)
+                    //const isRelevant = symbol.wordPosition != undefined && currentWordIndex == symbol.wordPosition + rule.offset;
+                    if ( /*!isRelevant*/true)
                         return;
                     relevantRuleTokens = rule.tokens.map(token => token.id);
                     const ruleTokens = rule.tokens
@@ -75,7 +75,8 @@ function activate(context) {
         provideHover(document, position, token) {
             Database_1.default.updateSymbols(document);
             // find the symbol
-            const lineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line);
+            const lineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line)
+                .sort((a, b) => a.position.character - b.position.character);
             const symbol = lineSymbols.reverse().find(symbol => symbol.position.character <= position.character);
             const format = symbol?.token.completion.detail;
             const description = symbol?.token.completion.documentation;
@@ -94,11 +95,16 @@ function activate(context) {
                 contents.push(`Defined on line ${definitionPos.line + 1}.`);
             }
             if (format)
-                contents.push(format);
+                contents.push(`Format: ${format}`);
             if (description)
                 contents.push(description.toString());
             if (symbol)
-                contents.push(symbol.token.id);
+                contents.push(`Token: ${symbol.token.id}`);
+            if (symbol) {
+                let rules = 'Rules: ';
+                symbol.token.rules.forEach(rule => rules += `${rule.offset}: ${rule.tokens.map(t => t.id)}\n`);
+                contents.push(rules);
+            }
             if (symbol && contents.length < 1)
                 contents.push(`No info found about ${symbol.content} (${symbol.token.id})`);
             return { contents: contents };
