@@ -88,7 +88,7 @@ function getCompletionFromParam(format, name) {
             break;
         default:
             item.kind = undefined;
-            item.insertText = new vscode.SnippetString(`{1:${name}}`);
+            item.insertText = new vscode.SnippetString(`\${1:${name}}`);
             break;
     }
     return item;

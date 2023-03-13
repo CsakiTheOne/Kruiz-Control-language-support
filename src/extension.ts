@@ -63,32 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.languages.registerDefinitionProvider('kruizcontrol', {
 			provideDefinition(document, position, token) {
 				Database.updateSymbols(document);
-
-				// find the symbol
-				const lineSymbols = Database.symbols.filter(symbol => symbol.position.line == position.line);
-				const symbol = lineSymbols.reverse().find(symbol => symbol.position.character <= position.character);
-
-				const format = symbol?.token.completion.detail;
-				const description = symbol?.token.completion.documentation;
-
-				const contents: string[] = [];
-
-				// look for definition
-				if (symbol?.token.definition?.regex != undefined) {
-					console.log(`Symbol has definition regex.`);
-					const definition = Database.symbols.find(definitionSymbol =>
-						symbol.token.definition &&
-						definitionSymbol.token.id == symbol.token.definition.id &&
-						(
-							symbol.content == definitionSymbol.content ||
-							symbol.content == `{${definitionSymbol.content}}`
-						)
-					);
-					if (definition == undefined) return;
-					const definitionPos = new vscode.Position(definition?.position.line, definition.position.character);
-					return new vscode.Location(vscode.Uri.file(document.fileName), definitionPos);
-				}
-
+				//TODO: rewrite needed
 				return null;
 			},
 		}),
