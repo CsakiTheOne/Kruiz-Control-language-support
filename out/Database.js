@@ -22,7 +22,7 @@ class Database {
             .setDefinition(/![a-z0-9]+\b/gi));
     }
     static getTokens() {
-        return this.baseTokens.concat(this.docTokens);
+        return this.baseTokens.concat(this.docTokens).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition));
     }
     static findLineColForByte(document, index) {
         const lines = document.split('\n');
@@ -51,18 +51,6 @@ class Database {
                 token.regex.lastIndex++;
             }
         }
-        for (const token of this.baseTokens.filter(t => t.definition).map(t => t.definition)) {
-            let match;
-            token.regex.lastIndex = 0;
-            while ((match = token.regex.exec(document)) != null) {
-                const symbol = new Symbol_1.default(token, match[0], this.findLineColForByte(document, match.index));
-                if (!symbols.includes(symbol)) {
-                    symbols.push(symbol);
-                }
-                token.regex.lastIndex++;
-            }
-        }
-        // this.baseTokens.filter(t => t.definition).map(t => t.definition!)
         return symbols;
     }
     static updateSymbols(document) {

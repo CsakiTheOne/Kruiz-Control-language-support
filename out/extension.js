@@ -49,7 +49,7 @@ function activate(context) {
                 // Return the tokens in the rules
                 completions = completions.concat(relevantRules.flatMap(rule => rule.tokens.map(token => token.completion)));
                 // Return completions
-                return completions;
+                return [...new Set(completions)];
             }
             // Return top-level tokens if the line has no symbols
             return Database_1.default.getTokens().filter(token => token.isTopLevel).map(token => token.completion);

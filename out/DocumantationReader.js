@@ -57,7 +57,8 @@ function loadDoc() {
                     keywords[keywords.length - 1].completion.kind = type == 'action' ? vscode.CompletionItemKind.Function : vscode.CompletionItemKind.Event;
                     for (let i = 0; i < params.length; i++) {
                         const param = params[i];
-                        keywords[keywords.length - 1].rules.push(new Rule_1.default(i + 1, [param, Database_1.default.getVariableToken()]));
+                        const simpleParam = new Token_1.default(param.id.split(' ')[param.id.split(' ').length - 1].replace(/<|>/g, ''), param.regex, param.completion);
+                        keywords[keywords.length - 1].rules.push(new Rule_1.default(i + 1, [param, simpleParam, Database_1.default.getVariableToken()]));
                     }
                     keywords.forEach(keyword => {
                         tokens = pushOrMergeToken(tokens, keyword);

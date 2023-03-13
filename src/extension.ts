@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 					// Return the tokens in the rules
 					completions = completions.concat(relevantRules.flatMap(rule => rule.tokens.map(token => token.completion)));
 					// Return completions
-					return completions;
+					return [... new Set(completions)];
 				}
 
 				// Return top-level tokens if the line has no symbols

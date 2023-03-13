@@ -29,14 +29,14 @@ export default class Database {
                 .setDefinition(/\b[bsfvmne]+\b/gi),
             new Token('number', /[0-9]+/gi, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
                 .setInsertText(new vscode.SnippetString('${1:0}$0')),
-            new Token('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Operator))
+            new Token('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Method))
                 .setInsertText(new vscode.SnippetString('!${1:command}$0'))
                 .setDefinition(/![a-z0-9]+\b/gi),
         );
     }
 
     static getTokens(): Token[] {
-        return this.baseTokens.concat(this.docTokens);
+        return this.baseTokens.concat(this.docTokens).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition!));
     }
 
     static contextualCompletions = new Map<string, vscode.CompletionItem[]>();
@@ -124,18 +124,6 @@ export default class Database {
                 token.regex.lastIndex++;
             }
         }
-        for (const token of this.baseTokens.filter(t => t.definition).map(t => t.definition!)) {
-            let match;
-            token.regex.lastIndex = 0;
-            while ((match = token.regex.exec(document)) != null) {
-                const symbol: Symbol = new Symbol(token, match[0], this.findLineColForByte(document, match.index));
-                if (!symbols.includes(symbol)) {
-                    symbols.push(symbol);
-                }
-                token.regex.lastIndex++;
-            }
-        }
-        // this.baseTokens.filter(t => t.definition).map(t => t.definition!)
         return symbols;
     }
 
