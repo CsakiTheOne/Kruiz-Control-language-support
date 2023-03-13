@@ -83,7 +83,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 				// look for definition
 				if (symbol?.token.definition?.regex != undefined) {
-					console.log(`Symbol has definition regex.`);
 					const definition = Database.symbols.find(definitionSymbol =>
 						symbol.token.definition &&
 						definitionSymbol.token.id == symbol.token.definition.id &&

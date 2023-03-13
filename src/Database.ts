@@ -119,7 +119,6 @@ export default class Database {
 
         // collect symbols in document
         this.symbols = this.findSymbols(docText);
-        console.log(`Found ${this.symbols.length} symbols in document`)
 
         // update variables
         this.variableCompletions = [];
