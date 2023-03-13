@@ -17,9 +17,10 @@ class Database {
             .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')), this.getVariableToken(), new Token_1.default('permission', /\b[bsfvmne]+\b/gi, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
             .setInsertText('bsfvmne')
             .setDefinition(/\b[bsfvmne]+\b/gi), new Token_1.default('number', /[0-9]+/gi, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
-            .setInsertText(new vscode.SnippetString('${1:0}$0')), new Token_1.default('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Operator))
+            .setInsertText(new vscode.SnippetString('${1:0}$0')), new Token_1.default('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Method))
             .setInsertText(new vscode.SnippetString('!${1:command}$0'))
-            .setDefinition(/![a-z0-9]+\b/gi));
+            .setDefinition(/![a-z0-9]+\b/gi), new Token_1.default('user', /(?<=Chat Whisper )\S+/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
+            .setDefinition(/(?<=Chat Whisper )\S+/gi));
     }
     static getTokens() {
         return this.baseTokens.concat(this.docTokens).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition));

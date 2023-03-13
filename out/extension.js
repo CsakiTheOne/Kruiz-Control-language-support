@@ -44,7 +44,14 @@ function activate(context) {
                 }).flat();
                 let completions = [];
                 // Return the relevant contextual completions
-                const allContextualCompletion = new Map([...Database_1.default.contextualCompletionsBase, ...Database_1.default.contextualCompletions]);
+                const map1 = Database_1.default.contextualCompletionsBase;
+                const map2 = Database_1.default.contextualCompletions;
+                const allContextualCompletion = new Map([...map1, ...map2]);
+                for (const [key, value] of allContextualCompletion) {
+                    if (map1.has(key) && map2.has(key)) {
+                        allContextualCompletion.set(key, map1.get(key).concat(map2.get(key)));
+                    }
+                }
                 completions = completions.concat(relevantRules.flatMap(rule => rule.tokens.filter(token => allContextualCompletion.has(token.id)).flatMap(token => allContextualCompletion.get(token.id))));
                 // Return the tokens in the rules
                 completions = completions.concat(relevantRules.flatMap(rule => rule.tokens.map(token => token.completion)));

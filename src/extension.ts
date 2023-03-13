@@ -55,7 +55,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 					let completions: vscode.CompletionItem[] = [];
 					// Return the relevant contextual completions
-					const allContextualCompletion = new Map([...Database.contextualCompletionsBase, ...Database.contextualCompletions]);
+					const map1 = Database.contextualCompletionsBase;
+					const map2 = Database.contextualCompletions;
+					const allContextualCompletion = new Map([...map1, ...map2]);
+					for (const [key, value] of allContextualCompletion) {
+						if (map1.has(key) && map2.has(key)) {
+							allContextualCompletion.set(key, map1.get(key)!.concat(map2.get(key)!));
+						}
+					  }
 					completions = completions.concat(
 						relevantRules.flatMap(rule =>
 							rule.tokens.filter(token => allContextualCompletion.has(token.id)).flatMap(token =>

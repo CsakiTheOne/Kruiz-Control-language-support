@@ -32,6 +32,8 @@ export default class Database {
             new Token('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Method))
                 .setInsertText(new vscode.SnippetString('!${1:command}$0'))
                 .setDefinition(/![a-z0-9]+\b/gi),
+            new Token('user', /(?<=Chat Whisper )\S+/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
+                .setDefinition(/(?<=Chat Whisper )\S+/gi),
         );
     }
 
