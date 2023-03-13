@@ -42,8 +42,14 @@ function activate(context) {
                     const wordIndex = getWordIndex(currentLine, symbol.position.character);
                     return symbol.token.rules.filter(rule => wordIndex + rule.offset == currentWordIndex);
                 }).flat();
+                let completions = [];
+                // Return the relevant contextual completions
+                const allContextualCompletion = new Map([...Database_1.default.contextualCompletionsBase, ...Database_1.default.contextualCompletions]);
+                completions = completions.concat(relevantRules.flatMap(rule => rule.tokens.filter(token => allContextualCompletion.has(token.id)).flatMap(token => allContextualCompletion.get(token.id))));
                 // Return the tokens in the rules
-                return relevantRules.flatMap(rule => rule.tokens.map(token => token.completion));
+                completions = completions.concat(relevantRules.flatMap(rule => rule.tokens.map(token => token.completion)));
+                // Return completions
+                return completions;
             }
             // Return top-level tokens if the line has no symbols
             return Database_1.default.getTokens().filter(token => token.isTopLevel).map(token => token.completion);
@@ -51,7 +57,20 @@ function activate(context) {
     }, '', ' '), vscode.languages.registerDefinitionProvider('kruizcontrol', {
         provideDefinition(document, position, token) {
             Database_1.default.updateSymbols(document);
-            //TODO: rewrite needed
+            // find the symbol
+            const lineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line)
+                .sort((a, b) => a.position.character - b.position.character);
+            const symbol = lineSymbols.reverse().find(symbol => symbol.position.character <= position.character);
+            // look for definition
+            if (symbol?.token.definition?.regex != undefined) {
+                const definition = Database_1.default.symbols.find(definitionSymbol => definitionSymbol.token.id == symbol.token.definition.id &&
+                    (symbol.content == definitionSymbol.content ||
+                        symbol.content == `{${definitionSymbol.content}}`));
+                if (definition) {
+                    const definitionPos = new vscode.Position(definition?.position.line, definition.position.character);
+                    return new vscode.Location(vscode.Uri.file(document.fileName), definitionPos);
+                }
+            }
             return null;
         },
     }), vscode.languages.registerHoverProvider('kruizcontrol', {
@@ -61,33 +80,28 @@ function activate(context) {
             const lineSymbols = Database_1.default.symbols.filter(symbol => symbol.position.line == position.line)
                 .sort((a, b) => a.position.character - b.position.character);
             const symbol = lineSymbols.reverse().find(symbol => symbol.position.character <= position.character);
-            const format = symbol?.token.completion.detail;
-            const description = symbol?.token.completion.documentation;
+            const symbols = Database_1.default.symbols.filter(s => symbol?.position.compareTo(s.position) == 0);
             const contents = [];
-            // look for definition
-            if (symbol?.token.definition?.regex != undefined) {
-                console.log(`Symbol has definition regex.`);
-                const definition = Database_1.default.symbols.find(definitionSymbol => symbol.token.definition &&
-                    definitionSymbol.token.id == symbol.token.definition.id &&
-                    (symbol.content == definitionSymbol.content ||
-                        symbol.content == `{${definitionSymbol.content}}`));
-                if (definition == undefined)
-                    return;
-                const definitionPos = new vscode.Position(definition?.position.line, definition.position.character);
-                //return new vscode.Location(vscode.Uri.file(document.fileName), definitionPos);
-                contents.push(`Defined on line ${definitionPos.line + 1}.`);
-            }
-            if (format)
-                contents.push(`Format: ${format}`);
-            if (description)
-                contents.push(description.toString());
-            if (symbol)
-                contents.push(`Token: ${symbol.token.id}`);
-            if (symbol) {
-                let rules = 'Rules: ';
-                symbol.token.rules.forEach(rule => rules += `${rule.offset}: ${rule.tokens.map(t => t.id)}\n`);
-                contents.push(rules);
-            }
+            symbols.forEach(s => {
+                const format = s.token.completion.detail;
+                const description = s.token.completion.documentation;
+                // look for definition
+                if (s.token.definition?.regex != undefined) {
+                    const definition = Database_1.default.symbols.find(definitionSymbol => definitionSymbol.token.id == s.token.definition.id &&
+                        (s.content == definitionSymbol.content ||
+                            s.content == `{${definitionSymbol.content}}`));
+                    if (definition) {
+                        const definitionPos = new vscode.Position(definition?.position.line, definition.position.character);
+                        //return new vscode.Location(vscode.Uri.file(document.fileName), definitionPos);
+                        contents.push(`Defined on line ${definitionPos.line + 1}.`);
+                    }
+                }
+                if (format)
+                    contents.push(`Format: ${format}`);
+                if (description)
+                    contents.push(description.toString());
+                contents.push(`Token: ${s.token.id}`);
+            });
             if (symbol && contents.length < 1)
                 contents.push(`No info found about ${symbol.content} (${symbol.token.id})`);
             return { contents: contents };

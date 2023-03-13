@@ -57,7 +57,7 @@ export function loadDoc() {
                         keywords[keywords.length - 1].completion.kind = type == 'action' ? vscode.CompletionItemKind.Function : vscode.CompletionItemKind.Event;
                         for (let i = 0; i < params.length; i++) {
                             const param = params[i];
-                            keywords[keywords.length - 1].rules.push(new Rule(i + 1, [param]));
+                            keywords[keywords.length - 1].rules.push(new Rule(i + 1, [param, Database.getVariableToken()]));
                         }
 
                         keywords.forEach(keyword => {
