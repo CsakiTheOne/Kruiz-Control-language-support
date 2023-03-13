@@ -3,6 +3,9 @@
 	"name": "Kruiz-Control",
 	"patterns": [
 		{
+			"include": "#javascript"
+		},
+		{
 			"include": "#comments"
 		},
 		{
@@ -34,6 +37,14 @@
 		}
 	],
 	"repository": {
+		"javascript": {
+			"patterns": [
+				{
+					"name": "meta.embedded.block.javascript",
+					"match": "(?i)(?<=Function )(.+\n?)*"
+				}
+			]
+		},
 		"comments": {
 			"patterns": [
 				{

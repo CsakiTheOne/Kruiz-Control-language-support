@@ -38,7 +38,10 @@
       {
         "language": "kruizcontrol",
         "scopeName": "source.txt",
-        "path": "./syntaxes/kruizcontrol.tmLanguage.json"
+        "path": "./syntaxes/kruizcontrol.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.javascript": "javascript"
+        }
       }
     ],
     "snippets": [
