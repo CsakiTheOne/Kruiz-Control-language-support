@@ -1,3 +1,9 @@
 {
-    
+    "if": {
+        "prefix": "if",
+        "body": [
+            "If ${1:optionalLinesToSkip} ${2:value1} ${3:comperator} ${4:value2}",
+            "\t$0"
+        ]
+    }
 }
