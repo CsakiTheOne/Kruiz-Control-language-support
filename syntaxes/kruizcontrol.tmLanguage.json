@@ -3,10 +3,10 @@
 	"name": "Kruiz-Control",
 	"patterns": [
 		{
-			"include": "#javascript"
+			"include": "#comments"
 		},
 		{
-			"include": "#comments"
+			"include": "#javascript"
 		},
 		{
 			"include": "#strings"
@@ -37,19 +37,19 @@
 		}
 	],
 	"repository": {
-		"javascript": {
-			"patterns": [
-				{
-					"name": "meta.embedded.block.javascript",
-					"match": "(?i)(?<=Function )(.+\n?)*"
-				}
-			]
-		},
 		"comments": {
 			"patterns": [
 				{
 					"name": "comment.line.number-sign.kruizcontrol",
 					"match": "#.*"
+				}
+			]
+		},
+		"javascript": {
+			"patterns": [
+				{
+					"name": "meta.embedded.block.javascript",
+					"match": "(?i)(?<=Function ')(.+\n?)*(?=')"
 				}
 			]
 		},
@@ -73,7 +73,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.class.kruizcontrol",
-					"match": "(?i)\\b(chat|delay|discord|message|obs|play|random|variable)\\b"
+					"match": "(?i)\\b(action|api (clear|data|get|header|methid|rawdata|send|url)|chat (send|whisper)|cooldown|debug|delay|discord|error|function|globals|ignore|list|log|loop|message|obs|param|play|random|reset|skip|timer|twitch|variable (load|remove|set|global (load|remove|set)))\\b"
 				}
 			]
 		},
@@ -85,7 +85,7 @@
 				},
 				{
 					"name": "variable.name.kruizcontrol",
-					"match": "(?i)(?<=variable (global )?load )[a-zA-Z0-9]+$"
+					"match": "(?i)((?<=variable (global )?load )[a-zA-Z0-9]+|{[\\w\\d]+})"
 				}
 			]
 		},
@@ -93,18 +93,15 @@
 			"patterns": [
 				{
 					"name": "entity.name.function.kruizcontrol",
-					"match": "!.+\\b"
+					"match": "![\\w\\d]+\\b"
 				}
 			]
 		},
 		"strings": {
-			"name": "string.quoted.double.kruizcontrol",
-			"begin": "\"",
-			"end": "\"",
 			"patterns": [
 				{
 					"name": "constant.character.escape.kruizcontrol",
-					"match": "\\\\."
+					"match": "\".*\""
 				}
 			]
 		},
@@ -120,7 +117,7 @@
 			"patterns": [
 				{
 					"name": "keyword.operator.kruizcontrol",
-					"match": "\\b(==|<|>|<=|>=|!=)+\\b"
+					"match": "(==|<|>|<=|>=|!=)"
 				}
 			]
 		},

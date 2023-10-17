@@ -107,10 +107,10 @@ function activate(context) {
                     contents.push(`Format: ${format}`);
                 if (description)
                     contents.push(description.toString());
-                contents.push(`Token: ${s.token.id}`);
+                contents.push(`Internal token: ${s.token.id} VSCode token: ${token}`);
             });
             if (symbol && contents.length < 1)
-                contents.push(`No info found about ${symbol.content} (${symbol.token.id})`);
+                contents.push(`No info found about ${symbol?.content} (${symbol?.token.id})`);
             return { contents: contents };
         },
     }));

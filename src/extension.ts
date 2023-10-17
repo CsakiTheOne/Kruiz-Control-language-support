@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 						if (map1.has(key) && map2.has(key)) {
 							allContextualCompletion.set(key, map1.get(key)!.concat(map2.get(key)!));
 						}
-					  }
+					}
 					completions = completions.concat(
 						relevantRules.flatMap(rule =>
 							rule.tokens.filter(token => allContextualCompletion.has(token.id)).flatMap(token =>
@@ -143,7 +143,7 @@ export function activate(context: vscode.ExtensionContext) {
 					contents.push(s.token.id);
 				});
 
-				if (symbol && contents.length < 1) contents.push(`No info found about ${symbol.content} (${symbol.token.id})`);
+				if (symbol && contents.length < 1) contents.push(`No info found about ${symbol?.content} (${symbol?.token.id})`);
 
 				return { contents: contents };
 			},

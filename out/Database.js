@@ -10,17 +10,18 @@ class Database {
             .setDefinition(/(?<=variable (global )?load )[a-z0-9]+/gi);
     }
     static initBaseTokens() {
-        this.baseTokens.push(new Token_1.default('color', /"#[0-9a-f]{6}"/gi, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
+        this.baseTokens.push(new Token_1.default('define user', /#define user/gi, new vscode.CompletionItem('Define user', vscode.CompletionItemKind.Reference), true)
+            .setInsertText(new vscode.SnippetString('#define user ${1:username}$0')), new Token_1.default('comment', /#.*/gi, new vscode.CompletionItem('Comment', vscode.CompletionItemKind.Text), true)
+            .setInsertText('# '), new Token_1.default('color', /"#[0-9a-f]{6}"/gi, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
             .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0'))
             .setDefinition(/"#[0-9a-f]{6}"/gi), new Token_1.default('string', /"(?:\\.|[^\\"])*"/g, new vscode.CompletionItem('string', vscode.CompletionItemKind.Text))
             .setInsertText(new vscode.SnippetString('"$0"')), new Token_1.default('comperator', /(==|<|>|<=|>=|!=)/g, new vscode.CompletionItem('comperator', vscode.CompletionItemKind.Operator))
             .setInsertText(new vscode.SnippetString('${1|==,<,>,<=,>=,!=|}$0')), this.getVariableToken(), new Token_1.default('permission', /\b[bsfvmne]+\b/gi, new vscode.CompletionItem('permission', vscode.CompletionItemKind.Constant))
-            .setInsertText('bsfvmne')
-            .setDefinition(/\b[bsfvmne]+\b/gi), new Token_1.default('number', /[0-9]+/gi, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
+            .setInsertText('bsfvmne'), new Token_1.default('number', /[0-9]+/gi, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
             .setInsertText(new vscode.SnippetString('${1:0}$0')), new Token_1.default('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Method))
             .setInsertText(new vscode.SnippetString('!${1:command}$0'))
-            .setDefinition(/![a-z0-9]+\b/gi), new Token_1.default('user', /(?<=Chat Whisper )\S+/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
-            .setDefinition(/(?<=Chat Whisper )\S+/gi));
+            .setDefinition(/![a-z0-9]+\b/gi), new Token_1.default('user', /((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
+            .setDefinition(/((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi));
     }
     static getTokens() {
         return this.baseTokens.concat(this.docTokens).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition));

@@ -3,6 +3,9 @@
 #Will roll a random question out from the selected pool below.
 #it will not ask a duplicate question in the next 5 times the command is used
 
+Function 'var name = [user]; var data = [data]; // rest of code ... }())
+> (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ...'
+
 OnCommand e 5 !QOTD !Question
 Message Send QuestionRoll
 
