@@ -1,6 +1,0 @@
-comment
-
-comment
-comment
-
-event.onCommand permission.everyone literal.number

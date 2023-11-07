@@ -6,7 +6,7 @@ const node_fetch_1 = require("node-fetch");
 const Token_1 = require("./Token");
 const Database_1 = require("./Database");
 const Rule_1 = require("./Rule");
-function loadDoc() {
+async function loadDoc() {
     let tokens = [];
     (0, node_fetch_1.default)('https://raw.githubusercontent.com/Kruiser8/Kruiz-Control/master/js/Documentation.md')
         .then(response => response.text())

@@ -117,14 +117,16 @@ export default class Database {
     }
 
     static findSymbols(document: string): Symbol[] {
+        let cleanText = document;
         const symbols: Symbol[] = [];
         for (const token of this.getTokens()) {
             let match;
             token.regex.lastIndex = 0;
-            while ((match = token.regex.exec(document)) != null) {
+            while ((match = token.regex.exec(cleanText)) != null) {
                 const symbol: Symbol = new Symbol(token, match[0], this.findLineColForByte(document, match.index));
                 if (!symbols.includes(symbol)) {
                     symbols.push(symbol);
+                    cleanText = cleanText.substring(0, match.index) + ' '.repeat(match[0].length) + cleanText.substring(match.index + match[0].length);
                 }
                 token.regex.lastIndex++;
             }

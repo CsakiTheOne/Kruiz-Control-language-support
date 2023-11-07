@@ -4,7 +4,7 @@ import Token from './Token';
 import Database from './Database';
 import Rule from './Rule';
 
-export function loadDoc() {
+export async function loadDoc() {
     let tokens: Token[] = [];
 
     fetch('https://raw.githubusercontent.com/Kruiser8/Kruiz-Control/master/js/Documentation.md')
