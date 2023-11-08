@@ -31,7 +31,7 @@ function getHoverProvider() {
                     contents.push(`Format: ${format}`);
                 if (description)
                     contents.push(description.toString());
-                contents.push(s.token.id);
+                contents.push(`Token: ${s.token.id} Regex: ${s.token.regex}`);
             });
             if (symbol && contents.length < 1)
                 contents.push(`No info found about ${symbol?.content} (${symbol?.token.id})`);

@@ -24,7 +24,7 @@ class Database {
             .setDefinition(/((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi));
     }
     static getTokens() {
-        return this.baseTokens.concat(this.docTokens).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition));
+        return this.baseTokens.concat(this.docTokens.reverse()).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition));
     }
     static findLineColForByte(document, index) {
         const lines = document.split('\n');
@@ -76,22 +76,6 @@ class Database {
                 this.contextualCompletions.get(token.id)?.push(item);
             });
         });
-        // update variables
-        /*this.symbols.filter(symbol => symbol.token.id == 'variable.definition')
-            .forEach(variable => {
-                const item = new vscode.CompletionItem(variable.content, vscode.CompletionItemKind.Variable);
-                item.insertText = `{${variable.content}}`;
-                item.documentation = new vscode.MarkdownString(`Variable loaded on line ${variable.position.line + 1}.`);
-            });
-        // update parameters
-        this.symbols.filter(symbol => symbol.token.parameters.length > 0)
-            .forEach(symbol => {
-                symbol.token.parameters.forEach(param => {
-                    const item = new vscode.CompletionItem(param, vscode.CompletionItemKind.Variable);
-                    item.insertText = `{${param}}`;
-                    item.documentation = new vscode.MarkdownString(`Parameter of ${symbol.content}. Defined on line ${symbol.position.line}.`);
-                });
-            });*/
     }
 }
 exports.default = Database;
@@ -144,13 +128,16 @@ Database.contextualCompletionsBase = new Map([
     [
         'user',
         [
-            new vscode.CompletionItem('CsakiTheOne', vscode.CompletionItemKind.User),
-            new vscode.CompletionItem('LenaTheNPC', vscode.CompletionItemKind.User),
-            new vscode.CompletionItem('Lightfall_23', vscode.CompletionItemKind.User),
-            new vscode.CompletionItem('NeshyLegacy', vscode.CompletionItemKind.User),
-            new vscode.CompletionItem('PrincezzRosalina', vscode.CompletionItemKind.User),
-            new vscode.CompletionItem('Xx_Nniko_xX', vscode.CompletionItemKind.User),
-        ]
+            'CsakiTheOne',
+            'kadelandthewizard',
+            'LenaTheNPC',
+            'Lightfall_23',
+            'NeshyLegacy',
+            'PrincezzRosalina',
+            'SabrinaJadexx',
+            'Teyaleen',
+            'ueszka_',
+        ].map(username => new vscode.CompletionItem(username, vscode.CompletionItemKind.User))
     ]
 ]);
 //# sourceMappingURL=Database.js.map

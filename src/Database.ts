@@ -19,7 +19,7 @@ export default class Database {
             new Token('define user', /#define user/gi, new vscode.CompletionItem('Define user', vscode.CompletionItemKind.Reference), true)
                 .setInsertText(new vscode.SnippetString('#define user ${1:username}$0')),
             new Token('comment', /#.*/gi, new vscode.CompletionItem('Comment', vscode.CompletionItemKind.Text), true)
-            .setInsertText('# '),
+                .setInsertText('# '),
             new Token('color', /"#[0-9a-f]{6}"/gi, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
                 .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0'))
                 .setDefinition(/"#[0-9a-f]{6}"/gi),
@@ -41,7 +41,7 @@ export default class Database {
     }
 
     static getTokens(): Token[] {
-        return this.baseTokens.concat(this.docTokens).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition!));
+        return this.baseTokens.concat(this.docTokens.reverse()).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition!));
     }
 
     static contextualCompletions = new Map<string, vscode.CompletionItem[]>();
@@ -91,13 +91,16 @@ export default class Database {
         [
             'user',
             [
-                new vscode.CompletionItem('CsakiTheOne', vscode.CompletionItemKind.User),
-                new vscode.CompletionItem('LenaTheNPC', vscode.CompletionItemKind.User),
-                new vscode.CompletionItem('Lightfall_23', vscode.CompletionItemKind.User),
-                new vscode.CompletionItem('NeshyLegacy', vscode.CompletionItemKind.User),
-                new vscode.CompletionItem('PrincezzRosalina', vscode.CompletionItemKind.User),
-                new vscode.CompletionItem('Xx_Nniko_xX', vscode.CompletionItemKind.User),
-            ]
+                'CsakiTheOne',
+                'kadelandthewizard',
+                'LenaTheNPC',
+                'Lightfall_23',
+                'NeshyLegacy',
+                'PrincezzRosalina',
+                'SabrinaJadexx',
+                'Teyaleen',
+                'ueszka_',
+            ].map(username => new vscode.CompletionItem(username, vscode.CompletionItemKind.User))
         ]
     ]);
 
@@ -155,24 +158,6 @@ export default class Database {
                     this.contextualCompletions.get(token.id)?.push(item);
                 });
         });
-
-        // update variables
-        /*this.symbols.filter(symbol => symbol.token.id == 'variable.definition')
-            .forEach(variable => {
-                const item = new vscode.CompletionItem(variable.content, vscode.CompletionItemKind.Variable);
-                item.insertText = `{${variable.content}}`;
-                item.documentation = new vscode.MarkdownString(`Variable loaded on line ${variable.position.line + 1}.`);
-            });
-        // update parameters
-        this.symbols.filter(symbol => symbol.token.parameters.length > 0)
-            .forEach(symbol => {
-                symbol.token.parameters.forEach(param => {
-                    const item = new vscode.CompletionItem(param, vscode.CompletionItemKind.Variable);
-                    item.insertText = `{${param}}`;
-                    item.documentation = new vscode.MarkdownString(`Parameter of ${symbol.content}. Defined on line ${symbol.position.line}.`);
-                });
-            });*/
-
     }
 
 }
