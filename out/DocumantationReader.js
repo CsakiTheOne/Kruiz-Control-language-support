@@ -13,13 +13,23 @@ async function loadDoc() {
         .then(documentation => {
         const sections = documentation.split('## Default Parameters')[1].split(/\n## /g);
         sections.forEach(section => {
-            //const sectionTitle = section.match(/.+/);
-            //const hasTriggers = !section.match(/\n###.+Triggers\nNone at the moment\./);
-            //const hasActions = !section.match(/\n###.+Actions\nNone at the moment\./);
-            const subSections = section.split(/\n#### /g);
-            subSections.forEach(sub => {
+            const actionOrTriggerSection = section.split(/\n#### /g);
+            actionOrTriggerSection.forEach(sub => {
                 const name = sub.match(/.+/)?.at(0);
-                const description = sub.match(/(?<=\*{2}Info\*{2} \| ).+/);
+                let description = [`Info: ${sub.match(/(?<=\*{2}Info\*{2} \| ).+/)}`];
+                if (sub.includes('**Example**')) {
+                    description.push(`Example: ${sub.match(/(?<=\*{2}Example\*{2} \| ).+/)}`);
+                }
+                if (sub.includes('##### Parameters')) {
+                    let parametersDescription = `Parameters:`;
+                    const parameterLines = sub.split('##### Parameters')[1].split('\n').filter(line => line.startsWith('**'));
+                    parameterLines.forEach(paramLine => {
+                        const paramName = paramLine.match(/(?<=\*{2}).+(?=\*{2})/)?.at(0);
+                        const paramDescription = paramLine.replace(/\*{2}.+\*{2} \| /, '');
+                        parametersDescription += `\n\n- \`${paramName}\` - ${paramDescription}`;
+                    });
+                    description.push(parametersDescription);
+                }
                 const format = sub.match(/(?<=\*{2}Format\*{2} \| `).+(?=`)/);
                 const type = name?.startsWith('On') ? 'trigger' : 'action';
                 if (name && description && format) {
@@ -52,8 +62,7 @@ async function loadDoc() {
                             keywords[i].rules.push(new Rule_1.default(1, [keywords[i + 1]]));
                         }
                     }
-                    keywords[keywords.length - 1].completion.detail = format[0];
-                    keywords[keywords.length - 1].completion.documentation = description[0];
+                    keywords[keywords.length - 1].completion.documentation = description.join('\n\n');
                     keywords[keywords.length - 1].completion.kind = type == 'action' ? vscode.CompletionItemKind.Function : vscode.CompletionItemKind.Event;
                     for (let i = 0; i < params.length; i++) {
                         const param = params[i];
