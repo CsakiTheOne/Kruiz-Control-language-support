@@ -40,7 +40,7 @@ async function loadDoc() {
                         else {
                             regex = new RegExp(`\\b(?<=${formatTillThis})${segment}\\b`, 'gi');
                             let completion = new vscode.CompletionItem(segment);
-                            completion.kind = vscode.CompletionItemKind.Class;
+                            completion.kind = type == 'trigger' ? vscode.CompletionItemKind.Event : vscode.CompletionItemKind.Class;
                             const token = new Token_1.default(tokenId, regex, completion);
                             keywords.push(token);
                         }

@@ -12,9 +12,6 @@ export async function loadDoc() {
         .then(documentation => {
             const sections = documentation.split('## Default Parameters')[1].split(/\n## /g);
             sections.forEach(section => {
-                //const sectionTitle = section.match(/.+/);
-                //const hasTriggers = !section.match(/\n###.+Triggers\nNone at the moment\./);
-                //const hasActions = !section.match(/\n###.+Actions\nNone at the moment\./);
                 const subSections = section.split(/\n#### /g);
                 subSections.forEach(sub => {
                     const name = sub.match(/.+/)?.at(0);
@@ -39,7 +36,7 @@ export async function loadDoc() {
                             else {
                                 regex = new RegExp(`\\b(?<=${formatTillThis})${segment}\\b`, 'gi');
                                 let completion = new vscode.CompletionItem(segment);
-                                completion.kind = vscode.CompletionItemKind.Class;
+                                completion.kind = type == 'trigger' ? vscode.CompletionItemKind.Event : vscode.CompletionItemKind.Class;
                                 const token = new Token(tokenId, regex, completion);
                                 keywords.push(token);
                             }

@@ -1,0 +1,10 @@
+{
+    "iconDefinitions": {
+        "kruizcontrol-icon": {
+            "iconPath": "./ic_kruizcontrol.png"
+        }
+    },
+    "languageIds": {
+        "kruizcontrol": "kruizcontrol-icon"
+    }
+}

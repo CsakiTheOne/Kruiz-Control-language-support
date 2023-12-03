@@ -10,7 +10,8 @@ class Database {
             .setDefinition(/(?<=variable (global )?load )[a-z0-9]+/gi);
     }
     static initBaseTokens() {
-        this.baseTokens.push(new Token_1.default('define user', /#define user/gi, new vscode.CompletionItem('Define user', vscode.CompletionItemKind.Reference), true)
+        this.baseTokens.push(new Token_1.default('user', /((?<=Chat Whisper )\S+)|((?<=#define user )\S+)|((?<={user} == ")\S+(?="))/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
+            .setDefinition(/((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi), new Token_1.default('define user', /#define user/gi, new vscode.CompletionItem('Define user', vscode.CompletionItemKind.Reference), true)
             .setInsertText(new vscode.SnippetString('#define user ${1:username}$0')), new Token_1.default('comment', /#.*/gi, new vscode.CompletionItem('Comment', vscode.CompletionItemKind.Text), true)
             .setInsertText('# '), new Token_1.default('color', /"#[0-9a-f]{6}"/gi, new vscode.CompletionItem('color', vscode.CompletionItemKind.Color))
             .setInsertText(new vscode.SnippetString('"#${1:FFFFFF}"$0'))
@@ -20,8 +21,7 @@ class Database {
             .setInsertText('bsfvmne'), new Token_1.default('number', /[0-9]+/gi, new vscode.CompletionItem('number', vscode.CompletionItemKind.Operator))
             .setInsertText(new vscode.SnippetString('${1:0}$0')), new Token_1.default('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Method))
             .setInsertText(new vscode.SnippetString('!${1:command}$0'))
-            .setDefinition(/![a-z0-9]+\b/gi), new Token_1.default('user', /((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
-            .setDefinition(/((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi));
+            .setDefinition(/![a-z0-9]+\b/gi));
     }
     static getTokens() {
         return this.baseTokens.concat(this.docTokens.reverse()).concat(this.baseTokens.filter(t => t.definition).map(t => t.definition));

@@ -16,6 +16,8 @@ export default class Database {
 
     static initBaseTokens() {
         this.baseTokens.push(
+            new Token('user', /((?<=Chat Whisper )\S+)|((?<=#define user )\S+)|((?<={user} == ")\S+(?="))/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
+                .setDefinition(/((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi),
             new Token('define user', /#define user/gi, new vscode.CompletionItem('Define user', vscode.CompletionItemKind.Reference), true)
                 .setInsertText(new vscode.SnippetString('#define user ${1:username}$0')),
             new Token('comment', /#.*/gi, new vscode.CompletionItem('Comment', vscode.CompletionItemKind.Text), true)
@@ -35,8 +37,6 @@ export default class Database {
             new Token('command', /![a-z0-9]+\b/gi, new vscode.CompletionItem('Twitch command', vscode.CompletionItemKind.Method))
                 .setInsertText(new vscode.SnippetString('!${1:command}$0'))
                 .setDefinition(/![a-z0-9]+\b/gi),
-            new Token('user', /((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi, new vscode.CompletionItem('user', vscode.CompletionItemKind.User))
-                .setDefinition(/((?<=Chat Whisper )\S+)|(?<=#define user )\S+/gi),
         );
     }
 

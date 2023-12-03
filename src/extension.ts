@@ -7,9 +7,12 @@ import { getHoverProvider } from './providers/hover';
 import { startDiagnostics } from './providers/diagnostics';
 import { getCodeActionsProvider } from './providers/codeActions';
 import { startShowingDecorations } from './providers/decorations';
+import { registerSimulateCommand } from './simulator/simulateCommand';
+import { getDocumentSymbolProvider } from './providers/symbol';
 
 export function activate(context: vscode.ExtensionContext) {
 	Database.initBaseTokens();
+	loadDoc();
 
 	startShowingDecorations(context);
 	startDiagnostics(context);
@@ -18,8 +21,9 @@ export function activate(context: vscode.ExtensionContext) {
 		getCodeActionsProvider(),
 		getCompletionItemProvider(),
 		getDefinitionProvider(),
+		getDocumentSymbolProvider(),
 		getHoverProvider(),
 	);
 
-	loadDoc();
+	registerSimulateCommand(context);
 }

@@ -22,17 +22,42 @@
     "buildDistributable": "vsce package"
   },
   "contributes": {
+    "configuration": [
+      {
+        "title": "Kruiz-Control Language Support",
+        "properties": {
+          "kruizControl.showCodeBlockBoundariesIf": {
+            "type": "boolean",
+            "default": true,
+            "description": "Show code block boundaries around if blocks"
+          },
+          "kruizControl.showCodeBlockBoundariesTrigger": {
+            "type": "boolean",
+            "default": false,
+            "description": "Show code block boundaries around trigger blocks"
+          },
+          "kruizControl.warnUsernameTypoPossible": {
+            "type": "boolean",
+            "default": true,
+            "description": "Warn if username typo is possible"
+          }
+        }
+      }
+    ],
     "languages": [
       {
         "id": "kruizcontrol",
         "aliases": [
-          "Kruiz-Control",
-          "kruizcontrol"
+          "Kruiz-Control"
         ],
         "extensions": [
           ".txt"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/ic_kruizcontrol.png",
+          "dark": "./images/ic_kruizcontrol.png"
+        }
       }
     ],
     "grammars": [
@@ -49,6 +74,19 @@
       {
         "language": "kruizcontrol",
         "path": "./snippets/kruizcontrol.json"
+      }
+    ],
+    "commands":[
+      {
+        "command": "kruizcontrol.simulate",
+        "title": "Simulate Kruiz-Control Twitch Bot"
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "kruizcontrol",
+        "label": "Kruiz-Control",
+        "path": "./images/icons.json"
       }
     ]
   },

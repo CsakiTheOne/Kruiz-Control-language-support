@@ -8,15 +8,15 @@ function getCodeActionsProvider() {
             const actions = [];
             const diagnostics = context.diagnostics.filter(d => d.source === 'kruizcontrol');
             diagnostics.forEach(d => {
-                if (d.message.includes('To hide this warning add this comment somewhere in the file: #define user')) {
-                    const action = new vscode.CodeAction('Hide this warning', vscode.CodeActionKind.QuickFix);
+                if (d.code == 'user_typo_possible') {
+                    const action = new vscode.CodeAction('Hide this warning by defining name on top of this file', vscode.CodeActionKind.QuickFix);
                     action.diagnostics = [d];
                     action.kind = vscode.CodeActionKind.QuickFix;
                     action.edit = new vscode.WorkspaceEdit();
                     action.edit.insert(document.uri, new vscode.Position(0, 0), '#' + d.message.split('#')[1] + '\n');
                     actions.push(action);
                 }
-                if (d.message.includes('If statement should have a number of lines to skip')) {
+                if (d.code == 'if_without_lineskip_param') {
                     const action = new vscode.CodeAction('Add number of lines to skip', vscode.CodeActionKind.QuickFix);
                     action.diagnostics = [d];
                     action.kind = vscode.CodeActionKind.QuickFix;
